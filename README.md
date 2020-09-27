@@ -59,6 +59,7 @@ No, Nasha is a Instruction Virtual Machine which means it could be interpreted a
 	- If you have an issue you can open a ticket and we will investigate the issue in question.
 	- If you have no programming knowledge but you are willing to support you can donate at **bc1qfedg6qty0l8hk8qu9d4akj86mh7yqfwzcjnvn7** (Segwit BTC)
 	- If you are willing to make your own project out of this repo, [Follow the setup and installation guide](#Installation) and make sure to credit our work or you will be facing **Mrak The Murderer** all jokes apart since we are licensed by the [GNU](https://github.com/Mrakovic-ORG/NashaVM/blob/master/LICENSE) license it is strictly prohibed to personally this project without disclosing the source.
+	- You can also join in our [discord server](https://discord.gg/JhCWDF4)
 
 ## Contributors & Greetings
 
