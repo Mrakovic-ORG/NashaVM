@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Sources\SectionReader">
+      <UniqueIdentifier>{7c1f6864-1f2d-43b3-8f8e-e5ece43b19be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Handlers">
+      <UniqueIdentifier>{1729b8d8-b80d-4ee0-9e3b-9727f07779a2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VMBody.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionReader.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DotnetReferencies.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="HandlerLinker.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="LdcI4.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Ret.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="VMBody.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Stack.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionReader.cpp">
+      <Filter>Sources\SectionReader</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionReaderAuxiliary.cpp">
+      <Filter>Sources\SectionReader</Filter>
+    </ClCompile>
+    <ClCompile Include="StringToByteArray.cpp">
+      <Filter>Sources\SectionReader</Filter>
+    </ClCompile>
+    <ClCompile Include="Globals.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DotnetReferencies.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="HandlerLinker.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeProxies.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
