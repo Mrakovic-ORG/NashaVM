@@ -45,7 +45,8 @@ msclr::gcroot<BinaryReader^> SectionReader::BeginRead(const char* path, int ID, 
 		fseek(fp, sectionHeader->PointerToRawData, SEEK_SET);
 		fread(pData, 1, ByteCount, fp);
 		
-		CloseHandle(fp);
+		//CloseHandle(fp);
+		fclose(fp);
 		
 		string strresult = aux->GetHexData(pData, ByteCount);
 		auto result = StrToArray::StringToByteArray(strresult);
