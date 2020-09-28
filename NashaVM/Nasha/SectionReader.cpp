@@ -11,6 +11,7 @@ SectionReader::SectionReader()
 	_path = path;
 	_id = ID;*/
 }
+// Sorry me for this poor Section Reader code!
 msclr::gcroot<BinaryReader^> SectionReader::BeginRead(const char* path, int ID, string Target)
 {
 	SectionReaderAuxiliary* aux = new SectionReaderAuxiliary();
@@ -43,11 +44,15 @@ msclr::gcroot<BinaryReader^> SectionReader::BeginRead(const char* path, int ID, 
 			SEEK_SET);
 		fseek(fp, sectionHeader->PointerToRawData, SEEK_SET);
 		fread(pData, 1, ByteCount, fp);
-
+		
+		CloseHandle(fp);
+		
 		string strresult = aux->GetHexData(pData, ByteCount);
 		auto result = StrToArray::StringToByteArray(strresult);
 		if (nameSec == Target)
 		{
+			CloseHandle(hFile);
+			CloseHandle(hFileMapping);
 			return sectionHelper(result, ID);
 		}
 	}
