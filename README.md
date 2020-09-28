@@ -69,6 +69,7 @@ No, Nasha is a Instruction Virtual Machine which means it could be interpreted a
 
 * [Мрак](https://github.com/MrakDev)
 * [0x11DFE](https://github.com/0x11DFE) aka Tesla
+* Assumer aka Wiewiórka
 *  All members from the [Mrakovic Organization](https://github.com/Mrakovic-ORG), [Wannabe1337](https://wannabe1337.xyz), [NetShields](https://discord.gg/Pqf2A9d)
 
 
