@@ -71,4 +71,4 @@ No, Nasha is a Instruction Virtual Machine which means it could be interpreted a
 ## Credits
 
 * [0xd4d](https://github.com/0xd4d) for the awesome work he brings to the .NET community.
-* MemeVM Creator (Sorry can't find original repo).
+* xsilent007 for [MemeVM[(https://github.com/TobitoFatitoRE/MemeVM)
