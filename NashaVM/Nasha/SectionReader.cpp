@@ -11,7 +11,7 @@ SectionReader::SectionReader()
 	_path = path;
 	_id = ID;*/
 }
-// Sorry me for this poor Section Reader code!
+// Sorry me for this poor Section Reader code! :P
 msclr::gcroot<BinaryReader^> SectionReader::BeginRead(const char* path, int ID, string Target)
 {
 	SectionReaderAuxiliary* aux = new SectionReaderAuxiliary();
