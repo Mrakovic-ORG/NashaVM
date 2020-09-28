@@ -46,8 +46,8 @@ namespace Nasha.CLI
             var GlobalConstructor = module.GlobalType.FindOrCreateStaticConstructor();
             GlobalConstructor.Body.Instructions.Insert(0, OpCodes.Newobj.ToInstruction(ConfigCtor));
             GlobalConstructor.Body.Instructions.Insert(1, OpCodes.Stsfld.ToInstruction(ConfigField));
-            //GlobalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(ConfigField));
-            //GlobalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(ConfigSetup));
+            GlobalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(ConfigField));
+            GlobalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(ConfigSetup));
 
             foreach (var type in module.Types)
             {
@@ -67,10 +67,7 @@ namespace Nasha.CLI
                 translated.Method.Body = new CilBody() { MaxStack = 1 };
                 translated.Method.Body.Instructions.Add(OpCodes.Newobj.ToInstruction(RunCtor));
                 AddParameters(translated.Method);
-                translated.Method.Body.Instructions.Add(OpCodes.Ldc_I4.ToInstruction(0/*Convert.ToInt32(ListOfIds[Index2++])*/));
-                var genericType = translated.Method.ReturnType == translated.Method.Module.CorLibTypes.Void
-                           ? RunCtor.DeclaringType.ToTypeSig()
-                           : translated.Method.ReturnType;
+                translated.Method.Body.Instructions.Add(OpCodes.Ldc_I4.ToInstruction(0));
 
                 translated.Method.Body.Instructions.Add(OpCodes.Ldsfld.ToInstruction(ConfigField));
                 translated.Method.Body.Instructions.Add(OpCodes.Call.ToInstruction(RunMethod));
@@ -107,8 +104,9 @@ namespace Nasha.CLI
         {
             var MainSection = new PESection(".Nasha0", 0x60000020);
             var Referencies = new PESection(".Nasha1", 0x60000020);
-
+           
             var writer = (ModuleWriterBase)sender;
+            TokenGetter.Writer = writer;
             if (e.Event != ModuleWriterEvent.MDMemberDefRidsAllocated)
                 return;
 
@@ -116,16 +114,17 @@ namespace Nasha.CLI
             var buferedLength = 0;
             var nasha0 = new byte[0];
 
-            foreach (var translated in translateds)
+            for(int i = 0; i < translateds.Count; ++i)
             {
-                var methodBytes = settings.Serialize(translated);
+                var methodBytes = settings.Serialize(translateds[i]);
                 Array.Resize(ref nasha0, nasha0.Length + methodBytes.Count);
                 methodBytes.CopyTo(nasha0, buferedLength);
+                settings.Translated[i].Method.Body.Instructions.Last(x => x.OpCode == OpCodes.Ldc_I4).Operand = buferedLength;
                 buferedLength += methodBytes.Count;
             }
 
             MainSection.Add(new ByteArrayChunk(Compress(nasha0)), 1);
-            Referencies.Add(new ByteArrayChunk(new byte[1]), 1);
+            Referencies.Add(new ByteArrayChunk(Compress(settings.TranslateReference().ToArray())), 1);
 
             NashaSections.Add(MainSection);
             NashaSections.Add(Referencies);

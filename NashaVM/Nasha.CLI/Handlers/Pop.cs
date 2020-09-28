@@ -4,21 +4,20 @@ using Nasha.CLI.Core;
 
 namespace Nasha.CLI.Handlers
 {
-    public class Ret : IHandler
+    public class Pop : IHandler
     {
-        public NashaOpcode Handler => NashaOpcode.Ret;
+        public NashaOpcode Handler => NashaOpcode.Pop;
 
-        public OpCode[] Inputs => new[] { OpCodes.Ret };
+        public OpCode[] Inputs => new[] { OpCodes.Pop };
 
         public NashaInstruction Translation(NashaSettings settings, MethodDef method, int index)
         {
-            return new NashaInstruction(NashaOpcode.Ret);
+            return new NashaInstruction(NashaOpcode.Pop);
         }
 
         public byte[] Serializer(NashaSettings body, NashaInstruction instruction)
         {
-            return new[] { (byte)NashaOpcode.Ret };
+            return new[] { (byte)NashaOpcode.Pop };
         }
-
     }
 }

@@ -28,5 +28,19 @@ namespace Nasha.CLI.Core
 
             return arr;
         }
+
+        public List<byte> TranslateReference()
+        {
+            var arr = new List<byte>();
+
+            arr.AddRange(BitConverter.GetBytes(References.Count));
+            for(int i = 0; i < References.Count; ++i)
+            {
+                arr.AddRange(BitConverter.GetBytes(References[i].Length));
+                arr.AddRange(Encoding.UTF8.GetBytes(References[i]));
+            }
+
+            return arr;
+        }
     }
 }

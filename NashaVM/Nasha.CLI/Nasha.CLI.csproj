@@ -50,9 +50,14 @@
     <Compile Include="Core\NashaSettings.cs" />
     <Compile Include="Core\NashaInstruction.cs" />
     <Compile Include="Core\NashaOpcode.cs" />
+    <Compile Include="Core\TokenGetter.cs" />
     <Compile Include="Core\Translated.cs" />
     <Compile Include="Core\Translator.cs" />
+    <Compile Include="Handlers\Call.cs" />
     <Compile Include="Handlers\LdcI4.cs" />
+    <Compile Include="Handlers\Ldstr.cs" />
+    <Compile Include="Handlers\Nop.cs" />
+    <Compile Include="Handlers\Pop.cs" />
     <Compile Include="Handlers\Ret.cs" />
     <Compile Include="Core\IHandler.cs" />
     <Compile Include="Program.cs" />

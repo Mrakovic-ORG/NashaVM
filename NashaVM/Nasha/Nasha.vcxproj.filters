@@ -79,5 +79,17 @@
     <ClCompile Include="NativeProxies.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Ldstr.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Call.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Nop.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Pop.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

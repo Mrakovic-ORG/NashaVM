@@ -3,11 +3,12 @@
 /// <summary>
 /// Create a <see cref="VMBody"/> to store important values for the running method.
 /// </summary>
-VMBody::VMBody(msclr::gcroot<BinaryReader^> reader, msclr::gcroot<cli::array<Object^>^> parameters)
+VMBody::VMBody(msclr::gcroot<BinaryReader^> reader, msclr::gcroot<cli::array<Object^>^> parameters, GSC* gsc)
 {
 	// Extracted From Parameters
 	_reader = new msclr::gcroot<BinaryReader^>(reader);
 	_parameters = new msclr::gcroot<cli::array<Object^>^>(parameters);
+	_glob = gsc;
 
 	// Default Static Initial Value
 	_flow = new msclr::gcroot<Int32^>(0);
@@ -75,9 +76,17 @@ void VMBody::SetActualFlow(msclr::gcroot<Int32^> flowValue)
 }
 
 /// <summary>
-/// Get the stack structure of the method
+/// Get the stack structure of the method.
 /// </summary>
 NStack* VMBody::GetStack()
 {
 	return _stack;
+}
+
+/// <summary>
+/// Get the Global Static Class(GSC).
+/// </summary>
+GSC* VMBody::Global()
+{
+	return _glob;
 }
