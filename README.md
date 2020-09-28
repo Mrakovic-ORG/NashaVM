@@ -34,7 +34,7 @@ msbuild
 |Ret| Return from method, possibly with a value. |AD|
 |Ldc_I4| Push num of type int32 onto the stack as int32. |AD|
 |Ldstr| Push a string object for the literal string. |AD|
-|Call| Call method described by method.	|AD|
+|Call| Call method described by method.	|NC|
 |Nop| Do nothing (No operation). |AD|
 |Pop| Pop value from the stack. |AD|
 |Branches|  |NA|
