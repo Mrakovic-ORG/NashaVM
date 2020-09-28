@@ -44,6 +44,9 @@
     <ClInclude Include="Ret.cpp">
       <Filter>Sources\Handlers</Filter>
     </ClInclude>
+    <ClInclude Include="ParameterParser.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -90,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="Pop.cpp">
       <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterParser.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

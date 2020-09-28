@@ -1,5 +1,6 @@
 #pragma once
 #include "VMBody.hpp"
+#include "ParameterParser.hpp"
 using namespace System::Reflection;
 public class Call
 {
@@ -21,6 +22,7 @@ public:
 		{
 			array[i] = body->GetStack()->Pop();
 		}
+		array = ParameterParser::Parser(array, methodBase);
 
 		MethodInfo^ methodInfo = (MethodInfo^)methodBase;
 		Object^ InvokeReturn = methodInfo->Invoke(methodInfo->IsStatic ? nullptr : body->GetStack()->Pop(), array);

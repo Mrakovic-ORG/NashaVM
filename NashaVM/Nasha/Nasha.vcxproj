@@ -160,6 +160,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NativeProxies.cpp" />
     <ClCompile Include="Nop.cpp" />
+    <ClCompile Include="ParameterParser.cpp" />
     <ClCompile Include="Pop.cpp" />
     <ClCompile Include="SectionReader.cpp" />
     <ClCompile Include="SectionReaderAuxiliary.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Globals.hpp" />
     <ClInclude Include="HandlerLinker.hpp" />
     <ClInclude Include="LdcI4.cpp" />
+    <ClInclude Include="ParameterParser.hpp" />
     <ClInclude Include="Ret.cpp" />
     <ClInclude Include="SectionReader.hpp" />
     <ClInclude Include="Stack.hpp" />
