@@ -15,7 +15,7 @@ namespace Nasha.CLI.Handlers
             return new NashaInstruction(NashaOpcode.Pop);
         }
 
-        public byte[] Serializer(NashaSettings body, NashaInstruction instruction)
+        public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             return new[] { (byte)NashaOpcode.Pop };
         }

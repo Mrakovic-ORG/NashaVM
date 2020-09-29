@@ -1,6 +1,6 @@
 #pragma once
-#include "VMBody.hpp"
-#include "ParameterParser.hpp"
+#include "./../../Headers/VMBody.hpp"
+#include "./../../Headers/ParameterParser.hpp"
 using namespace System::Reflection;
 public class Call
 {
@@ -9,10 +9,10 @@ public:
 	static void Run(msclr::gcroot<VMBody^>& body, msclr::gcroot<Object^> operand)
 	{
 		auto instruction = (Tuple<Int16, Int32>^)(Object^)operand;
-		Int16 assemblyToken = instruction->Item1;
+		Int16 referenceID = instruction->Item1;
 		Int32 operandToken = instruction->Item2;
 
-		auto reference = AppDomain::CurrentDomain->Load(gcnew AssemblyName(msclr::interop::marshal_as<System::String^>(body->Global()->Referencies->Lookup(assemblyToken))));
+		auto reference = AppDomain::CurrentDomain->Load(gcnew AssemblyName(msclr::interop::marshal_as<System::String^>(body->Global()->References->Lookup(referenceID))));
 
 		auto methodBase = reference->ManifestModule->ResolveMethod(operandToken);
 		int num = methodBase->GetParameters()->Length;

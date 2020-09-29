@@ -2,12 +2,12 @@
 #include <string>
 #include <vector>
 
-public class DotnetReferencies
+public class DotnetReferences
 {
 public:
-	DotnetReferencies();
+	DotnetReferences();
 private:
-	std::vector<std::string>* _referencies;
+	std::vector<std::string>* _references;
 public:
 	void New(std::string ReferenceName);
 	std::string Lookup(int id);

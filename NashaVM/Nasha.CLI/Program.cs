@@ -34,7 +34,7 @@ namespace Nasha.CLI
             IMethod RunMethod = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == "Execute");
             IMethod RunCtor = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == ".ctor");
             IMethod ConfigCtor = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == ".ctor");
-            IMethod ConfigSetup = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupReferencies");
+            IMethod ConfigSetup = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupReferences");
 
             RunMethod = module.Import(RunMethod);
             RunCtor = module.Import(RunCtor);

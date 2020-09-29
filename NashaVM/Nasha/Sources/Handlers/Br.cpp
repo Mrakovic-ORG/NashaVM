@@ -1,15 +1,15 @@
 #pragma once
-#include "VMBody.hpp"
-public class LdcI4 
+#include "./../../Headers/VMBody.hpp"
+public class Br
 {
 public:
-	LdcI4() {}
+	Br() {}
 	static void Run(msclr::gcroot<VMBody^>& body, msclr::gcroot<Object^> operand)
 	{
-		body->GetStack()->Push((Int32^)(Object^)operand);
+		body->SetActualFlow((Int32^)(Object^)operand);
 	}
 	static gcroot<Object^> Constructor(msclr::gcroot<VMBody^>& body)
 	{
-		return (Object^)body->GetReader()->ReadInt32();
+		return body->GetReader()->ReadInt32();
 	}
 };

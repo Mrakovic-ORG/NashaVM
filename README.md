@@ -1,5 +1,5 @@
 
-# NashaVM - Native Sharp Virtual Machine
+# [NashaVM - Native Sharp Virtual Machine](https://github.com/Mrakovic-ORG/NashaVM)
 
 Nasha is a Virtual Machine for .NET files and its runtime was made in [C++/CLI](https://en.wikipedia.org/wiki/C%2B%2B/CLI)
 
@@ -15,7 +15,6 @@ msbuild
 - [dnlib](https://github.com/0xd4d/dnlib)
 - [.NET Framework 4.0](https://www.microsoft.com/pt-br/download/details.aspx?id=17851)
 - [Visual C++ Redistrutable](https://www.microsoft.com/en-us/download/details.aspx?id=48145)
-- **I recommend you to use Visual Studio to build!**
 
 ### Opcodes Status
 <details>
@@ -37,9 +36,14 @@ msbuild
 |Call| Call method described by method.	|NC|
 |Nop| Do nothing (No operation). |AD|
 |Pop| Pop value from the stack. |AD|
-|Branches|  |NA|
+|Br| Branch to target. |AD|
+|Brfalse| Branch to target if value is zero (false). |AD|
+|Brtrue| Branch to target if value is non-zero (true). |AD|
+|Ldloc| Load local variable of index indx onto stack. |AD|
+|Ldsfld| Push the value of the field on the stack. |AD|
+|Stloc| Pop a value from stack into local variable indx. |AD|
+|Stsfld| Replace the value of the field with val. |AD|
 
-TODO: Add more opcodes
 </details>
 
 
@@ -63,7 +67,7 @@ No, Nasha is a Instruction Virtual Machine which means it could be interpreted a
 	- If you have an issue you can open a ticket and we will investigate the issue in question.
 	- If you have no programming knowledge but you are willing to support you can donate at **bc1qfedg6qty0l8hk8qu9d4akj86mh7yqfwzcjnvn7** (Segwit BTC)
 	- If you are willing to make your own project out of this repo, [Follow the setup and installation guide](#Installation) and make sure to credit our work or you will be facing **Mrak The Murderer** all jokes apart since we are licensed by the [GNU](https://github.com/Mrakovic-ORG/NashaVM/blob/master/LICENSE) license it is strictly prohibed to personally this project without disclosing the source.
-	- You can also join in our [discord server](https://discord.gg/JhCWDF4)
+	- You can also join our [Discord server](https://discord.gg/JhCWDF4)
 
 ## Contributors & Greetings
 

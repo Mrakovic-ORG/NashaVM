@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Nasha.CLI</RootNamespace>
     <AssemblyName>Nasha.CLI</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,16 +51,25 @@
     <Compile Include="Core\NashaSettings.cs" />
     <Compile Include="Core\NashaInstruction.cs" />
     <Compile Include="Core\NashaOpcode.cs" />
+    <Compile Include="Core\Offset.cs" />
+    <Compile Include="Core\OffsetHelper.cs" />
     <Compile Include="Core\TokenGetter.cs" />
     <Compile Include="Core\Translated.cs" />
     <Compile Include="Core\Translator.cs" />
+    <Compile Include="Handlers\Br.cs" />
+    <Compile Include="Handlers\Brtrue.cs" />
+    <Compile Include="Handlers\Brfalse.cs" />
     <Compile Include="Handlers\Call.cs" />
     <Compile Include="Handlers\LdcI4.cs" />
+    <Compile Include="Handlers\Stloc.cs" />
+    <Compile Include="Handlers\Ldloc.cs" />
+    <Compile Include="Handlers\Ldsfld.cs" />
     <Compile Include="Handlers\Ldstr.cs" />
     <Compile Include="Handlers\Nop.cs" />
     <Compile Include="Handlers\Pop.cs" />
     <Compile Include="Handlers\Ret.cs" />
     <Compile Include="Core\IHandler.cs" />
+    <Compile Include="Handlers\Stsfld.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

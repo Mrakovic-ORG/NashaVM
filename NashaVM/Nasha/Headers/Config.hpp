@@ -5,5 +5,5 @@ public ref class Config
 public:
 	GSC* glob;
 	Config();
-	void SetupReferencies();
+	void SetupReferences();
 };

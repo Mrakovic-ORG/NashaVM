@@ -1,10 +1,10 @@
 #pragma once
 #include "HandlerLinker.hpp"
-#include "DotnetReferencies.hpp"
+#include "DotnetReferences.hpp"
 public class GSC
 {
 public:
 	GSC();
 	HandlerLinker* Handlers;
-	DotnetReferencies* Referencies;
+	DotnetReferences* References;
 };

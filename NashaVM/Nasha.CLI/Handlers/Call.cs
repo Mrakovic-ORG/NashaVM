@@ -23,7 +23,7 @@ namespace Nasha.CLI.Handlers
 
         }
 
-        public byte[] Serializer(NashaSettings body, NashaInstruction instruction)
+        public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var buf = new byte[7];
             buf[0] = (byte)NashaOpcode.Call;

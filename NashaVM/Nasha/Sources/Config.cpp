@@ -1,8 +1,8 @@
 #include <msclr\marshal_cppstd.h>
 #include <string>
-#include "SectionReader.hpp"
-#include "Globals.hpp"
-#include "Config.hpp"
+#include "./../Headers/SectionReader.hpp"
+#include "./../Headers/Globals.hpp"
+#include "./../Headers/Config.hpp"
 
 Config::Config()
 {
@@ -13,7 +13,7 @@ Config::Config()
 /// <summary>
 /// Stores the references coming from .Nasha1 section
 /// </summary>
-void Config::SetupReferencies()
+void Config::SetupReferences()
 {
 	msclr::interop::marshal_context ctx;
 
@@ -26,6 +26,6 @@ void Config::SetupReferencies()
 	{
 		System::Int32 len = Bin->ReadInt32();
 		cli::array<System::Byte>^ strB = Bin->ReadBytes(len);
-		glob->Referencies->New(msclr::interop::marshal_as<std::string>(System::Text::Encoding::UTF8->GetString(strB)));
+		glob->References->New(msclr::interop::marshal_as<std::string>(System::Text::Encoding::UTF8->GetString(strB)));
 	}
 }

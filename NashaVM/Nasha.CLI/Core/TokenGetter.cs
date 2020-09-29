@@ -13,5 +13,11 @@ namespace Nasha.CLI.Core
                 ? Writer.Metadata.GetToken(member).ToInt32()
                 : member.MDToken.ToInt32();
         }
+        internal static int GetFieldToken(IField field)
+        {
+            return Writer.Module == field.Module
+                ? Writer.Metadata.GetToken(field).ToInt32()
+                : field.MDToken.ToInt32();
+        }
     }
 }

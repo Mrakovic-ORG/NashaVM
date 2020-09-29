@@ -17,85 +17,112 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VMBody.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="SectionReader.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="DotnetReferencies.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="HandlerLinker.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Config.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="LdcI4.cpp">
+    <ClInclude Include="Sources\Handlers\LdcI4.cpp">
       <Filter>Sources\Handlers</Filter>
     </ClInclude>
-    <ClInclude Include="Ret.cpp">
+    <ClInclude Include="Sources\Handlers\Ret.cpp">
       <Filter>Sources\Handlers</Filter>
     </ClInclude>
-    <ClInclude Include="ParameterParser.hpp">
+    <ClInclude Include="Headers\VMBody.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Config.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Globals.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\HandlerLinker.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\ParameterParser.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\SectionReader.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Stack.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DotnetReferences.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Locals.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="Sources\VMBody.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="VMBody.cpp">
+    <ClCompile Include="Sources\Stack.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Stack.cpp">
+    <ClCompile Include="Sources\ParameterParser.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Config.cpp">
+    <ClCompile Include="Sources\NativeProxies.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="SectionReader.cpp">
+    <ClCompile Include="Sources\Main.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\HandlerLinker.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Globals.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DotnetReferencies.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Config.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\SectionReader\SectionReader.cpp">
       <Filter>Sources\SectionReader</Filter>
     </ClCompile>
-    <ClCompile Include="SectionReaderAuxiliary.cpp">
+    <ClCompile Include="Sources\SectionReader\SectionReaderAuxiliary.cpp">
       <Filter>Sources\SectionReader</Filter>
     </ClCompile>
-    <ClCompile Include="StringToByteArray.cpp">
+    <ClCompile Include="Sources\SectionReader\StringToByteArray.cpp">
       <Filter>Sources\SectionReader</Filter>
     </ClCompile>
-    <ClCompile Include="Globals.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="DotnetReferencies.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="HandlerLinker.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="NativeProxies.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Ldstr.cpp">
+    <ClCompile Include="Sources\Handlers\Call.cpp">
       <Filter>Sources\Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="Call.cpp">
+    <ClCompile Include="Sources\Handlers\Ldstr.cpp">
       <Filter>Sources\Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="Nop.cpp">
+    <ClCompile Include="Sources\Handlers\Nop.cpp">
       <Filter>Sources\Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="Pop.cpp">
+    <ClCompile Include="Sources\Handlers\Pop.cpp">
       <Filter>Sources\Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="ParameterParser.cpp">
+    <ClCompile Include="Sources\Handlers\Ldsfld.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Stsfld.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Brfalse.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Br.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Brtrue.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Locals.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Ldloc.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Stloc.cpp">
+      <Filter>Sources\Handlers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

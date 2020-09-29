@@ -75,9 +75,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>.\..\Nasha.CLI\bin\$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>.\..\Nasha.CLI\bin\$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -151,34 +153,43 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Call.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="DotnetReferencies.cpp" />
-    <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="HandlerLinker.cpp" />
-    <ClCompile Include="Ldstr.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="NativeProxies.cpp" />
-    <ClCompile Include="Nop.cpp" />
-    <ClCompile Include="ParameterParser.cpp" />
-    <ClCompile Include="Pop.cpp" />
-    <ClCompile Include="SectionReader.cpp" />
-    <ClCompile Include="SectionReaderAuxiliary.cpp" />
-    <ClCompile Include="Stack.cpp" />
-    <ClCompile Include="StringToByteArray.cpp" />
-    <ClCompile Include="VMBody.cpp" />
+    <ClCompile Include="Sources\Handlers\Br.cpp" />
+    <ClCompile Include="Sources\Handlers\Brfalse.cpp" />
+    <ClCompile Include="Sources\Handlers\Brtrue.cpp" />
+    <ClCompile Include="Sources\Handlers\Ldloc.cpp" />
+    <ClCompile Include="Sources\Handlers\Ldsfld.cpp" />
+    <ClCompile Include="Sources\Handlers\Call.cpp" />
+    <ClCompile Include="Sources\Config.cpp" />
+    <ClCompile Include="Sources\DotnetReferencies.cpp" />
+    <ClCompile Include="Sources\Globals.cpp" />
+    <ClCompile Include="Sources\HandlerLinker.cpp" />
+    <ClCompile Include="Sources\Handlers\Ldstr.cpp" />
+    <ClCompile Include="Sources\Handlers\Stloc.cpp" />
+    <ClCompile Include="Sources\Locals.cpp" />
+    <ClCompile Include="Sources\Main.cpp" />
+    <ClCompile Include="Sources\NativeProxies.cpp" />
+    <ClCompile Include="Sources\Handlers\Nop.cpp" />
+    <ClCompile Include="Sources\ParameterParser.cpp" />
+    <ClCompile Include="Sources\Handlers\Pop.cpp" />
+    <ClCompile Include="Sources\SectionReader\SectionReader.cpp" />
+    <ClCompile Include="Sources\SectionReader\SectionReaderAuxiliary.cpp" />
+    <ClCompile Include="Sources\Stack.cpp" />
+    <ClCompile Include="Sources\SectionReader\StringToByteArray.cpp" />
+    <ClCompile Include="Sources\VMBody.cpp" />
+    <ClCompile Include="Sources\Handlers\Stsfld.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Config.hpp" />
-    <ClInclude Include="DotnetReferencies.hpp" />
-    <ClInclude Include="Globals.hpp" />
-    <ClInclude Include="HandlerLinker.hpp" />
-    <ClInclude Include="LdcI4.cpp" />
-    <ClInclude Include="ParameterParser.hpp" />
-    <ClInclude Include="Ret.cpp" />
-    <ClInclude Include="SectionReader.hpp" />
-    <ClInclude Include="Stack.hpp" />
-    <ClInclude Include="VMBody.hpp" />
+    <ClInclude Include="Headers\Config.hpp" />
+    <ClInclude Include="Headers\DotnetReferences.hpp" />
+    <ClInclude Include="Headers\Globals.hpp" />
+    <ClInclude Include="Headers\HandlerLinker.hpp" />
+    <ClInclude Include="Sources\Handlers\LdcI4.cpp" />
+    <ClInclude Include="Headers\ParameterParser.hpp" />
+    <ClInclude Include="Headers\Locals.hpp" />
+    <ClInclude Include="Sources\Handlers\Ret.cpp" />
+    <ClInclude Include="Headers\SectionReader.hpp" />
+    <ClInclude Include="Headers\Stack.hpp" />
+    <ClInclude Include="Headers\VMBody.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

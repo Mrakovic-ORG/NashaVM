@@ -2,6 +2,7 @@
 #include <msclr\marshal_cppstd.h>
 #include "Stack.hpp"
 #include "Globals.hpp"
+#include "Locals.hpp"
 
 using namespace std;
 using namespace msclr::interop;
@@ -20,6 +21,7 @@ private:
 	bool _isReturning;
 	NStack* _stack;
 	GSC* _glob;
+	Locals^ _locals;
 public:
 	msclr::gcroot<cli::array<Object^>^> GetParameters();
 	msclr::gcroot<BinaryReader^> GetReader();
@@ -30,4 +32,5 @@ public:
 	void SetActualFlow(msclr::gcroot<Int32^> flowValue);
 	NStack* GetStack();
 	GSC* Global();
+	Locals^ GetLocals();
 };

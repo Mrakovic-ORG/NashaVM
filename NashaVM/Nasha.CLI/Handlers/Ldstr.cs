@@ -17,7 +17,7 @@ namespace Nasha.CLI.Handlers
             return new NashaInstruction(NashaOpcode.Ldstr, method.Body.Instructions[index].Operand);
         }
 
-        public byte[] Serializer(NashaSettings body, NashaInstruction instruction)
+        public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var str = Encoding.UTF8.GetBytes(instruction.Operand.ToString());
 

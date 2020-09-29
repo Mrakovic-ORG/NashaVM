@@ -1,8 +1,8 @@
-#include "Stack.hpp"
+#include "./../Headers/Stack.hpp"
 #pragma managed(push,off)
 
 /// <summary>
-/// Creates a class that replicates the C# System.Collections.Stack but in native
+/// Creates a class that replicates the C# System.Collections.Stack natively
 /// </summary>
 NStack::NStack() {}
 

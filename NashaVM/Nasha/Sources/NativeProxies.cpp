@@ -1,9 +1,9 @@
-#include "VMBody.hpp"
-#include "Config.hpp"
+#include "./../Headers/VMBody.hpp"
+#include "./../Headers/Config.hpp"
 
 #pragma managed(push,off)
 /// <summary>
-///  Performs an indirect call(calli) to one of the handlers(Deserialization) by their id.
+///  Performs an indirect call(calli) to one of the handlers(Deserialization) by its id.
 /// </summary>
 /// <param name="ptr">VMBody's address pointer</param>
 /// <param name="handlerID">Handler identification</param>
@@ -19,7 +19,7 @@ static msclr::gcroot<Object^> NativeProxy(void* ptr, int handlerID, GSC* glob)
 }
 
 /// <summary>
-///  Performs an indirect call(calli) to one of the handlers(Deserialization) by their id (without returning value).
+///  Performs an indirect call(calli) to one of the handlers(Deserialization) by its id (without returning value).
 /// </summary>
 /// <param name="ptr">VMBody's address pointer</param>
 /// <param name="operand">Operand's address pointer</param>

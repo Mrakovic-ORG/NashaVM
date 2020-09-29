@@ -1,11 +1,11 @@
-#include "VMBody.hpp"
+#include "./../Headers/VMBody.hpp"
 
 /// <summary>
 /// Create a <see cref="VMBody"/> to store important values for the running method.
 /// </summary>
 VMBody::VMBody(msclr::gcroot<BinaryReader^> reader, msclr::gcroot<cli::array<Object^>^> parameters, GSC* gsc)
 {
-	// Extracted From Parameters
+	// Extracted from Parameters
 	_reader = new msclr::gcroot<BinaryReader^>(reader);
 	_parameters = new msclr::gcroot<cli::array<Object^>^>(parameters);
 	_glob = gsc;
@@ -13,13 +13,14 @@ VMBody::VMBody(msclr::gcroot<BinaryReader^> reader, msclr::gcroot<cli::array<Obj
 	// Default Static Initial Value
 	_flow = new msclr::gcroot<Int32^>(0);
 	_stack = new NStack();
+	_locals = gcnew Locals();
 
 }
 
 /// <summary>
 /// Get the parameters assigned to this body.
 /// </summary>
-/// <returns>List of parameter as object</returns>
+/// <returns>List of parameters as object</returns>
 msclr::gcroot<cli::array<Object^>^> VMBody::GetParameters()
 {
 	return (*_parameters);
@@ -89,4 +90,12 @@ NStack* VMBody::GetStack()
 GSC* VMBody::Global()
 {
 	return _glob;
+}
+
+/// <summary>
+/// Get the locals from body.
+/// </summary>
+Locals^ VMBody::GetLocals()
+{
+	return _locals;
 }

@@ -16,7 +16,7 @@ namespace Nasha.CLI.Handlers
             return new NashaInstruction(NashaOpcode.LdcI4, method.Body.Instructions[index].GetLdcI4Value());
         }
 
-        public byte[] Serializer(NashaSettings body, NashaInstruction instruction)
+        public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var buf = new byte[5];
             buf[0] = (byte)NashaOpcode.LdcI4;

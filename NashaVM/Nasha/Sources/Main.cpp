@@ -1,8 +1,8 @@
 #include <vector>
-#include "VMBody.hpp"
-#include "SectionReader.hpp"
-#include "Config.hpp"
-#include "NativeProxies.cpp"
+#include "./../Headers/VMBody.hpp"
+#include "./../Headers/SectionReader.hpp"
+#include "./../Headers/Config.hpp"
+#include "./NativeProxies.cpp"
 #pragma endregion
 public ref class Main
 {
@@ -19,9 +19,9 @@ public:
 		// Get calling assembly from .NET
 		auto CallingAssembly = System::Reflection::Assembly::GetCallingAssembly();
 
-		// Preparing to read the .Nasha0 (responsible for body bytes) section
+		// Getting ready to read the .Nasha0 (responsible for body bytes) section
 		auto BodyReader = new SectionReader();
-		// Instance a VMBody from .Nasha0 for actual body
+		// Instance a VMBody from .Nasha0 for the actual body
 		*body = gcnew VMBody(BodyReader->BeginRead(ctx.marshal_as<string>(CallingAssembly->Location).c_str(), (int)ID, ".Nasha0"), Parameters, cfg->glob);
 
 		// Get the amount of instructions coming from the current body
@@ -36,7 +36,7 @@ public:
 
 		for (int i = 0; i < InstructionsCount; ++i)
 		{
-			// Get the ID of an instruction to go to the handler
+			// Get the ID of an instruction that goes to the handler
 			Int32 handID = (*body)->GetReader()->ReadByte();
 
 			// Add the handled instruction to Instructions list
@@ -45,10 +45,10 @@ public:
 		}
 		for (int i = 0; i < Instructions.size();)
 		{
-			// Checks if the body is returning any value
+			// Check if the body returns any value
 			if ((*body)->IsMethodReturning())
 			{
-				// Returns the value returned by the body
+				// Returns the value gathered by the body
 				return (*body)->GetReturnedObject();
 			}
 			*OperandPtr = Instructions[i]->Item2;
