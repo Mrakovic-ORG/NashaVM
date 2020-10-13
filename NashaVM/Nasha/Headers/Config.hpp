@@ -6,4 +6,5 @@ public:
 	GSC* glob;
 	Config();
 	void SetupReferences();
+	void SetupDiscover();
 };

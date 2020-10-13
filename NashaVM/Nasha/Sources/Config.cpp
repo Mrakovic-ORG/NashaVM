@@ -16,7 +16,6 @@ Config::Config()
 void Config::SetupReferences()
 {
 	msclr::interop::marshal_context ctx;
-
 	SectionReader* ReferenciesReader = new SectionReader();
 
 	auto Bin = ReferenciesReader->BeginRead(ctx.marshal_as<std::string>(
@@ -28,4 +27,22 @@ void Config::SetupReferences()
 		cli::array<System::Byte>^ strB = Bin->ReadBytes(len);
 		glob->References->New(msclr::interop::marshal_as<std::string>(System::Text::Encoding::UTF8->GetString(strB)));
 	}
+}
+
+void Config::SetupDiscover()
+{
+	msclr::interop::marshal_context ctx;
+	SectionReader* Reader = new SectionReader();
+
+	auto DiscoverReader = Reader->BeginReadString(ctx.marshal_as<std::string>(
+		System::Reflection::Assembly::GetCallingAssembly()->ManifestModule->Assembly->Location).c_str(), -1, ".Nasha2");
+
+	auto jamaica = (String^)DiscoverReader;
+	auto stdStr = ctx.marshal_as<std::string>(jamaica);
+
+	OpcodeDiscover* discover = new OpcodeDiscover(stdStr);
+
+	// Instantiates the handler linking class.
+	glob->Handlers = new HandlerLinker(discover);
+
 }

@@ -35,11 +35,13 @@ namespace Nasha.CLI
             IMethod RunCtor = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == ".ctor");
             IMethod ConfigCtor = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == ".ctor");
             IMethod ConfigSetup = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupReferences");
+            IMethod ConfigDiscover = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupDiscover");
 
             RunMethod = module.Import(RunMethod);
             RunCtor = module.Import(RunCtor);
             ConfigCtor = module.Import(ConfigCtor);
             ConfigSetup = module.Import(ConfigSetup);
+            ConfigDiscover = module.Import(ConfigDiscover);
 
             var ConfigField = new FieldDefUser("cfg", new FieldSig(ConfigCtor.DeclaringType.ToTypeSig()), dnlib.DotNet.FieldAttributes.Public | dnlib.DotNet.FieldAttributes.Static);
             module.GlobalType.Fields.Add(ConfigField);
@@ -48,6 +50,8 @@ namespace Nasha.CLI
             GlobalConstructor.Body.Instructions.Insert(1, OpCodes.Stsfld.ToInstruction(ConfigField));
             GlobalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(ConfigField));
             GlobalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(ConfigSetup));
+            GlobalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(ConfigField));
+            GlobalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(ConfigDiscover));
 
             foreach (var type in module.Types)
             {
@@ -85,7 +89,7 @@ namespace Nasha.CLI
             writer.WriterEvent += InsertSections;
             writer.WriterEvent += InsertVMBodies;
             writer.MetadataLogger = DummyLogger.NoThrowInstance;
-            writer.MetadataOptions.Flags = MetadataFlags.PreserveAll;
+            writer.MetadataOptions.Flags = MetadataFlags.AlwaysCreateStringsHeap | MetadataFlags.AlwaysCreateBlobHeap | MetadataFlags.AlwaysCreateGuidHeap | MetadataFlags.AlwaysCreateUSHeap;
             module.Write(Output, writer);
 
             Console.ForegroundColor = ConsoleColor.Green;
@@ -104,7 +108,8 @@ namespace Nasha.CLI
         {
             var MainSection = new PESection(".Nasha0", 0x60000020);
             var Referencies = new PESection(".Nasha1", 0x60000020);
-           
+            var OpcodesList = new PESection(".Nasha2", 0x60000020);
+
             var writer = (ModuleWriterBase)sender;
             TokenGetter.Writer = writer;
             if (e.Event != ModuleWriterEvent.MDMemberDefRidsAllocated)
@@ -125,9 +130,11 @@ namespace Nasha.CLI
 
             MainSection.Add(new ByteArrayChunk(Compress(nasha0)), 1);
             Referencies.Add(new ByteArrayChunk(Compress(settings.TranslateReference().ToArray())), 1);
+            OpcodesList.Add(new ByteArrayChunk(settings.TranslateOpcodes().ToArray()), 1);
 
             NashaSections.Add(MainSection);
             NashaSections.Add(Referencies);
+            NashaSections.Add(OpcodesList);
         }
 
         private static void AddParameters(MethodDef method)

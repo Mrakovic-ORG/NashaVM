@@ -38,9 +38,6 @@
     <ClInclude Include="Headers\ParameterParser.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\SectionReader.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Stack.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -48,6 +45,18 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Locals.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\OpcodeDiscover.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\SectionReader.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\NStringReader.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DiscoverInstruction.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -123,6 +132,18 @@
     </ClCompile>
     <ClCompile Include="Sources\Handlers\Stloc.cpp">
       <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\OpcodeDiscover.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\NStringReader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DiscoverInstruction.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Ldarg.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

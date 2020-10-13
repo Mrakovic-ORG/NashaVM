@@ -5,8 +5,6 @@
 /// </summary>
 GSC::GSC()
 {
-	// Instantiates the handler linking class.
-	Handlers = new HandlerLinker();
 	// Instantiates the DotnetReferences class.
 	References = new DotnetReferences();
 }

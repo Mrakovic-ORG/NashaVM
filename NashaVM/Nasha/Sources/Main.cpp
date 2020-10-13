@@ -56,7 +56,7 @@ public:
 			// NativeProxy2 is responsible for executing an instruction with its operand
 			NativeProxy2(body, OperandPtr, Instructions[i]->Item1, cfg->glob);
 
-			// Yes, sorry for the spaghetti code... the VMBody->_flow will be used in the future for flow control operators
+			// Yes, sorry for the spaghetti code...
 			msclr::gcroot<Int32^> NewFlow = (Int32)(Int32^)(*body)->GetActualFlow() + 1;
 			(*body)->SetActualFlow(NewFlow);
 			i = (Int32)(Int32^)(*body)->GetActualFlow();

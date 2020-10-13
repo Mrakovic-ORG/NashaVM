@@ -12,39 +12,42 @@
 #include "./Handlers/Br.cpp"
 #include "./Handlers/Ldloc.cpp"
 #include "./Handlers/Stloc.cpp"
+#include "./Handlers/Ldarg.cpp"
 
 #pragma managed(push,off)
 /// <summary>
 /// A class to link handlers to their pointers.
 /// </summary>
-HandlerLinker::HandlerLinker()
+HandlerLinker::HandlerLinker(OpcodeDiscover* discover)
 {
-	OpcodesPointers[0] = &Ret::Run;	
-	OpcodesPointers[1] = &LdcI4::Run;
-	OpcodesPointers[2] = &Ldstr::Run;
-	OpcodesPointers[3] = &Call::Run;
-	OpcodesPointers[4] = &Nop::Run;
-	OpcodesPointers[5] = &Pop::Run;
-	OpcodesPointers[6] = &Ldsfld::Run;
-	OpcodesPointers[7] = &Stsfld::Run;
-	OpcodesPointers[8] = &Brfalse::Run;
-	OpcodesPointers[9] = &Brtrue::Run;
-	OpcodesPointers[10] = &Br::Run;
-	OpcodesPointers[11] = &Ldloc::Run;
-	OpcodesPointers[12] = &Stloc::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(0)] = &Ret::Run;	
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(1)] = &LdcI4::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(2)] = &Ldstr::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(3)] = &Call::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(4)] = &Nop::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(5)] = &Pop::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(6)] = &Ldsfld::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(7)] = &Stsfld::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(8)] = &Brfalse::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(9)] = &Brtrue::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(10)] = &Br::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(11)] = &Ldloc::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(12)] = &Stloc::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(13)] = &Ldarg::Run;
 
-	DeserializationPointers[0] = &Ret::Constructor;
-	DeserializationPointers[1] = &LdcI4::Constructor;
-	DeserializationPointers[2] = &Ldstr::Constructor;
-	DeserializationPointers[3] = &Call::Constructor;
-	DeserializationPointers[4] = &Nop::Constructor;
-	DeserializationPointers[5] = &Pop::Constructor;
-	DeserializationPointers[6] = &Ldsfld::Constructor;
-	DeserializationPointers[7] = &Stsfld::Constructor;
-	DeserializationPointers[8] = &Brfalse::Constructor;
-	DeserializationPointers[9] = &Brtrue::Constructor;
-	DeserializationPointers[10] = &Br::Constructor;
-	DeserializationPointers[11] = &Ldloc::Constructor;
-	DeserializationPointers[12] = &Stloc::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(0)] = &Ret::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(1)] = &LdcI4::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(2)] = &Ldstr::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(3)] = &Call::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(4)] = &Nop::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(5)] = &Pop::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(6)] = &Ldsfld::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(7)] = &Stsfld::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(8)] = &Brfalse::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(9)] = &Brtrue::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(10)] = &Br::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(11)] = &Ldloc::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(12)] = &Stloc::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(13)] = &Ldarg::Constructor;
 }
 #pragma managed(pop)

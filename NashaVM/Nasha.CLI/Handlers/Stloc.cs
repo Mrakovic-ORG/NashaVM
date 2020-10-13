@@ -7,13 +7,13 @@ namespace Nasha.CLI.Handlers
 {
     public class Stloc : IHandler
     {
-        public NashaOpcode Handler => NashaOpcode.Stloc;
+        public NashaOpcode Handler => NashaOpcodes.Stloc;
 
         public OpCode[] Inputs => new[] { OpCodes.Stloc, OpCodes.Stloc_S, OpCodes.Stloc_0, OpCodes.Stloc_1, OpCodes.Stloc_2, OpCodes.Stloc_3 };
 
         public NashaInstruction Translation(NashaSettings settings, MethodDef method, int index)
         {
-            return new NashaInstruction(NashaOpcode.Stloc, method.Body.Variables.IndexOf(method.Body.Instructions[index].GetLocal(method.Body.Variables)));
+            return new NashaInstruction(NashaOpcodes.Stloc, method.Body.Variables.IndexOf(method.Body.Instructions[index].GetLocal(method.Body.Variables)));
 
         }
 
@@ -21,7 +21,7 @@ namespace Nasha.CLI.Handlers
         {
             var buf = new byte[5];
 
-            buf[0] = (byte)NashaOpcode.Stloc;
+            buf[0] = (byte)NashaOpcodes.Stloc.ShuffledID;
             Array.Copy(BitConverter.GetBytes((int)instruction.Operand), 0, buf, 1, 4);
             return buf;
         }

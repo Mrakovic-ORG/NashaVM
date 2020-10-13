@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="dnlib, Version=3.3.2.0, Culture=neutral, PublicKeyToken=50e96378b6e77999, processorArchitecture=MSIL">
@@ -47,12 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\Map.cs" />
     <Compile Include="Core\NashaSettings.cs" />
     <Compile Include="Core\NashaInstruction.cs" />
     <Compile Include="Core\NashaOpcode.cs" />
     <Compile Include="Core\Offset.cs" />
     <Compile Include="Core\OffsetHelper.cs" />
+    <Compile Include="Core\OpcodesBlock.cs" />
     <Compile Include="Core\TokenGetter.cs" />
     <Compile Include="Core\Translated.cs" />
     <Compile Include="Core\Translator.cs" />
@@ -61,6 +65,8 @@
     <Compile Include="Handlers\Brfalse.cs" />
     <Compile Include="Handlers\Call.cs" />
     <Compile Include="Handlers\LdcI4.cs" />
+    <Compile Include="Handlers\Ldarg.cs" />
+    <Compile Include="Handlers\Newarr.cs" />
     <Compile Include="Handlers\Stloc.cs" />
     <Compile Include="Handlers\Ldloc.cs" />
     <Compile Include="Handlers\Ldsfld.cs" />

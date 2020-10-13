@@ -76,10 +76,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>.\..\Nasha.CLI\bin\$(Configuration)</OutDir>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>.\..\Nasha.CLI\bin\$(Configuration)</OutDir>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -153,6 +155,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\DiscoverInstruction.cpp" />
+    <ClCompile Include="Sources\Handlers\Ldarg.cpp" />
+    <ClCompile Include="Sources\OpcodeDiscover.cpp" />
     <ClCompile Include="Sources\Handlers\Br.cpp" />
     <ClCompile Include="Sources\Handlers\Brfalse.cpp" />
     <ClCompile Include="Sources\Handlers\Brtrue.cpp" />
@@ -177,12 +182,16 @@
     <ClCompile Include="Sources\SectionReader\StringToByteArray.cpp" />
     <ClCompile Include="Sources\VMBody.cpp" />
     <ClCompile Include="Sources\Handlers\Stsfld.cpp" />
+    <ClCompile Include="Sources\NStringReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Config.hpp" />
+    <ClInclude Include="Headers\DiscoverInstruction.hpp" />
     <ClInclude Include="Headers\DotnetReferences.hpp" />
     <ClInclude Include="Headers\Globals.hpp" />
     <ClInclude Include="Headers\HandlerLinker.hpp" />
+    <ClInclude Include="Headers\OpcodeDiscover.hpp" />
+    <ClInclude Include="Headers\NStringReader.hpp" />
     <ClInclude Include="Sources\Handlers\LdcI4.cpp" />
     <ClInclude Include="Headers\ParameterParser.hpp" />
     <ClInclude Include="Headers\Locals.hpp" />

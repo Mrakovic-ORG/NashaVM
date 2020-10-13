@@ -4,21 +4,20 @@ using Nasha.CLI.Core;
 
 namespace Nasha.CLI.Handlers
 {
-    public class Ret : IHandler
+    public class Newarr : IHandler
     {
-        public NashaOpcode Handler => NashaOpcodes.Ret;
+        public NashaOpcode Handler => NashaOpcodes.Newarr;
 
-        public OpCode[] Inputs => new[] { OpCodes.Ret };
+        public OpCode[] Inputs => new[] { OpCodes.Newarr };
 
         public NashaInstruction Translation(NashaSettings settings, MethodDef method, int index)
         {
-            return new NashaInstruction(NashaOpcodes.Ret);
+            return new NashaInstruction(NashaOpcodes.Newarr);
         }
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
-            return new[] { (byte)NashaOpcodes.Ret.ShuffledID };
+            return new[] { (byte)NashaOpcodes.Newarr.ShuffledID };
         }
-
     }
 }

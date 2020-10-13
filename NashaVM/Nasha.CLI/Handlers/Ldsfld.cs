@@ -7,7 +7,7 @@ namespace Nasha.CLI.Handlers
 {
     public class Ldsfld : IHandler
     {
-        public NashaOpcode Handler => NashaOpcode.Ldsfld;
+        public NashaOpcode Handler => NashaOpcodes.Ldsfld;
 
         public OpCode[] Inputs => new[] { OpCodes.Ldsfld, OpCodes.Ldfld };
 
@@ -18,14 +18,14 @@ namespace Nasha.CLI.Handlers
             if (!settings.References.Contains(assemblyName))
                 settings.References.Add(assemblyName);
 
-            return new NashaInstruction(NashaOpcode.Ldsfld, new Tuple<short, IField>((short)settings.References.IndexOf(assemblyName), field));
+            return new NashaInstruction(NashaOpcodes.Ldsfld, new Tuple<short, IField>((short)settings.References.IndexOf(assemblyName), field));
         }
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var buf = new byte[7];
 
-            buf[0] = (byte)NashaOpcode.Ldsfld;
+            buf[0] = (byte)NashaOpcodes.Ldsfld.ShuffledID;
             var (referenceId, field) = (Tuple<short, IField>)instruction.Operand;
             Array.Copy(BitConverter.GetBytes(referenceId), 0, buf, 1, 2);
             Array.Copy(BitConverter.GetBytes(TokenGetter.GetFieldToken(field)), 0, buf, 3, 4);
