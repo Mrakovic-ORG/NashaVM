@@ -19,10 +19,8 @@ public:
 		// Get calling assembly from .NET
 		auto CallingAssembly = System::Reflection::Assembly::GetCallingAssembly();
 
-		// Getting ready to read the .Nasha0 (responsible for body bytes) section
-		auto BodyReader = new SectionReader();
 		// Instance a VMBody from .Nasha0 for the actual body
-		*body = gcnew VMBody(BodyReader->BeginRead(ctx.marshal_as<string>(CallingAssembly->Location).c_str(), (int)ID, ".Nasha0"), Parameters, cfg->glob);
+		*body = gcnew VMBody(cfg->glob->VMBytes->Get(ID), Parameters, cfg->glob);
 
 		// Get the amount of instructions coming from the current body
 		InstructionsCount = (*body)->GetReader()->ReadInt32();
@@ -67,4 +65,5 @@ public:
 
 int main()
 {
+	
 }

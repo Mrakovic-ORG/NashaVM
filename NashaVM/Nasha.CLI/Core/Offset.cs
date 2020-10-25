@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Nasha.CLI.Core
 {
-    public struct Offset
+    public readonly struct Offset
     {
         public Offset(int start, int val)
         {
-            Starts = start;
+            Start = start;
             Value = val;
         }
 
-        public int Starts;
-        public int Value;
+        public readonly int Start;
+        public readonly int Value;
     }
 }

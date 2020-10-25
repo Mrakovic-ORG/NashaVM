@@ -51,15 +51,6 @@ public:
 				string axe = string_format("%02X", ptr[index + i]);
 				listHEX += axe;
 			}
-			for (i = 0; i < width; ++i)
-			{
-				if (ptr[index + i] >= 0x20 &&
-					ptr[index + i] <= 0x7F)
-				{
-				}
-				else {
-				}
-			}
 			index += width;
 		}
 
@@ -67,19 +58,6 @@ public:
 		{
 			string axe = string_format("%02X", ptr[index + i]);
 			listHEX += (axe);
-		}
-		while (i < width)
-		{
-			i += 1;
-		}
-		for (i = 0; index + i < len; ++i)
-		{
-			if (ptr[index + i] >= 0x20 &&
-				ptr[index + i] <= 0x7F)
-			{
-			}
-			else {
-			}
 		}
 		return listHEX;
 	}

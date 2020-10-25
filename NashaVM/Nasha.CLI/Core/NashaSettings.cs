@@ -10,8 +10,7 @@ namespace Nasha.CLI.Core
     public class NashaSettings
     {
         public List<string> References { get; }
-        //public List<>
-        public List<Translated> Translated;
+        public readonly List<Translated> Translated;
 
         public NashaSettings()
         {
@@ -35,16 +34,16 @@ namespace Nasha.CLI.Core
             var arr = new List<byte>();
 
             arr.AddRange(BitConverter.GetBytes(References.Count));
-            for (int i = 0; i < References.Count; ++i)
+            foreach (var reference in References)
             {
-                arr.AddRange(BitConverter.GetBytes(References[i].Length));
-                arr.AddRange(Encoding.UTF8.GetBytes(References[i]));
+                arr.AddRange(BitConverter.GetBytes(reference.Length));
+                arr.AddRange(Encoding.UTF8.GetBytes(reference));
             }
 
             return arr;
         }
 
-        public List<byte> TranslateOpcodes()
+        public static List<byte> TranslateOpcodes()
         {
             var arr = new List<byte>();
 
@@ -73,7 +72,7 @@ namespace Nasha.CLI.Core
                 }
                 catch 
                 {
-                    stub.AddRange(BitConverter.GetBytes(777)); // Exit control flow.
+                    stub.AddRange(BitConverter.GetBytes(1337)); // Exit control flow.
                 }
 
                 blocks.Add(new OpcodesBlock(list[i].ID, stub.ToArray()));
@@ -87,7 +86,7 @@ namespace Nasha.CLI.Core
                 arr.AddRange(block.Content);
 
             arr.AddRange(BitConverter.GetBytes(SetBlock));
-            arr.AddRange(BitConverter.GetBytes(777));
+            arr.AddRange(BitConverter.GetBytes(1337));
 
             arr.AddRange(BitConverter.GetBytes(Exit));
             arr.AddRange(BitConverter.GetBytes(Nothing));

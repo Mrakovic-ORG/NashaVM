@@ -7,4 +7,5 @@ public:
 	Config();
 	void SetupReferences();
 	void SetupDiscover();
+	void SetupBody();
 };

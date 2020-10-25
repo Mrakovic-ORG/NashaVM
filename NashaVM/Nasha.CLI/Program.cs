@@ -13,12 +13,12 @@ using Nasha.CLI.Core;
 
 namespace Nasha.CLI
 {
-    class Program
+    internal static class Program
     {
-        private static readonly NashaSettings settings = new NashaSettings();
+        private static readonly NashaSettings Settings = new NashaSettings();
         private static readonly List<PESection> NashaSections = new List<PESection>();
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length == 0)
             {
@@ -28,72 +28,71 @@ namespace Nasha.CLI
             }
             var module = ModuleDefMD.Load(args[0]);
 
-            var runtimePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-               "Nasha.dll");
+            var runtimePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Nasha.dll");
             var runtime = ModuleDefMD.Load(runtimePath);
-            IMethod RunMethod = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == "Execute");
-            IMethod RunCtor = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == ".ctor");
-            IMethod ConfigCtor = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == ".ctor");
-            IMethod ConfigSetup = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupReferences");
-            IMethod ConfigDiscover = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupDiscover");
+            IMethod runMethod = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == "Execute");
+            IMethod runCtor = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == ".ctor");
+            IMethod configCtor = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == ".ctor");
+            IMethod configSetup = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupReferences");
+            IMethod configDiscover = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupDiscover");
+            IMethod configVmBytes = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupBody");
 
-            RunMethod = module.Import(RunMethod);
-            RunCtor = module.Import(RunCtor);
-            ConfigCtor = module.Import(ConfigCtor);
-            ConfigSetup = module.Import(ConfigSetup);
-            ConfigDiscover = module.Import(ConfigDiscover);
+            runMethod = module.Import(runMethod);
+            runCtor = module.Import(runCtor);
+            configCtor = module.Import(configCtor);
+            configSetup = module.Import(configSetup);
+            configDiscover = module.Import(configDiscover);
+            configVmBytes = module.Import(configVmBytes);
 
-            var ConfigField = new FieldDefUser("cfg", new FieldSig(ConfigCtor.DeclaringType.ToTypeSig()), dnlib.DotNet.FieldAttributes.Public | dnlib.DotNet.FieldAttributes.Static);
-            module.GlobalType.Fields.Add(ConfigField);
-            var GlobalConstructor = module.GlobalType.FindOrCreateStaticConstructor();
-            GlobalConstructor.Body.Instructions.Insert(0, OpCodes.Newobj.ToInstruction(ConfigCtor));
-            GlobalConstructor.Body.Instructions.Insert(1, OpCodes.Stsfld.ToInstruction(ConfigField));
-            GlobalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(ConfigField));
-            GlobalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(ConfigSetup));
-            GlobalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(ConfigField));
-            GlobalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(ConfigDiscover));
+            var configField = new FieldDefUser("cfg", new FieldSig(configCtor.DeclaringType.ToTypeSig()), dnlib.DotNet.FieldAttributes.Public | dnlib.DotNet.FieldAttributes.Static);
+            module.GlobalType.Fields.Add(configField);
+            var globalConstructor = module.GlobalType.FindOrCreateStaticConstructor();
+            globalConstructor.Body.Instructions.Insert(0, OpCodes.Newobj.ToInstruction(configCtor));
+            globalConstructor.Body.Instructions.Insert(1, OpCodes.Stsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(configSetup));
+            globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configDiscover));
+            globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configVmBytes));
 
             foreach (var type in module.Types)
             {
+                if (type.IsGlobalModuleType) continue;
                 foreach (var method in type.Methods)
                 {
-
                     if (!method.HasBody || !method.Body.HasInstructions) continue;
-                    var translated = Translator.Translate(settings, method);
+                    var translated = Translator.Translate(Settings, method);
                     if (translated == null)
                         continue;
-                    settings.Translated.Add(new Translated(method, translated));
+                    Settings.Translated.Add(new Translated(method, translated));
                 }
             }
-            foreach (var translated in settings.Translated)
+            foreach (var translated in Settings.Translated)
             {
-                //var body = translated.Method.Body;
                 translated.Method.Body = new CilBody() { MaxStack = 1 };
-                translated.Method.Body.Instructions.Add(OpCodes.Newobj.ToInstruction(RunCtor));
+                translated.Method.Body.Instructions.Add(OpCodes.Newobj.ToInstruction(runCtor));
                 AddParameters(translated.Method);
                 translated.Method.Body.Instructions.Add(OpCodes.Ldc_I4.ToInstruction(0));
 
-                translated.Method.Body.Instructions.Add(OpCodes.Ldsfld.ToInstruction(ConfigField));
-                translated.Method.Body.Instructions.Add(OpCodes.Call.ToInstruction(RunMethod));
-                if (translated.Method.HasReturnType)
-                    translated.Method.Body.Instructions.Add(OpCodes.Unbox_Any.ToInstruction(translated.Method.ReturnType.ToTypeDefOrRef()));
-                else
-                    translated.Method.Body.Instructions.Add(OpCodes.Pop.ToInstruction());
+                translated.Method.Body.Instructions.Add(OpCodes.Ldsfld.ToInstruction(configField));
+                translated.Method.Body.Instructions.Add(OpCodes.Call.ToInstruction(runMethod));
+                translated.Method.Body.Instructions.Add(translated.Method.HasReturnType ? OpCodes.Unbox_Any.ToInstruction(translated.Method.ReturnType.ToTypeDefOrRef()) : OpCodes.Pop.ToInstruction());
 
                 translated.Method.Body.Instructions.Add(OpCodes.Ret.ToInstruction());
             }
 
-            var Output = Path.GetFileNameWithoutExtension(args[0]) + "-Nasha.exe";
+            var output = Path.GetFileNameWithoutExtension(args[0]) + "-Nasha.exe";
             var writer = new ModuleWriterOptions(module);
 
             writer.WriterEvent += InsertSections;
-            writer.WriterEvent += InsertVMBodies;
+            writer.WriterEvent += InsertVmBody;
             writer.MetadataLogger = DummyLogger.NoThrowInstance;
             writer.MetadataOptions.Flags = MetadataFlags.AlwaysCreateStringsHeap | MetadataFlags.AlwaysCreateBlobHeap | MetadataFlags.AlwaysCreateGuidHeap | MetadataFlags.AlwaysCreateUSHeap;
-            module.Write(Output, writer);
+            module.Write(output, writer);
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[#] Virtualized file saved as \"{Output}\"");
+            Console.WriteLine($"[#] Virtualized file saved as \"{output}\"");
             Console.ReadKey();
         }
 
@@ -104,37 +103,37 @@ namespace Nasha.CLI
                 NashaSections.ForEach(x => writer.AddSection(x));
         }
 
-        private static void InsertVMBodies(object sender, ModuleWriterEventArgs e)
+        private static void InsertVmBody(object sender, ModuleWriterEventArgs e)
         {
-            var MainSection = new PESection(".Nasha0", 0x60000020);
-            var Referencies = new PESection(".Nasha1", 0x60000020);
-            var OpcodesList = new PESection(".Nasha2", 0x60000020);
+            var mainSection = new PESection(".Nasha0", 0x60000020);
+            var references = new PESection(".Nasha1", 0x60000020);
+            var opcodesList = new PESection(".Nasha2", 0x60000020);
 
             var writer = (ModuleWriterBase)sender;
             TokenGetter.Writer = writer;
             if (e.Event != ModuleWriterEvent.MDMemberDefRidsAllocated)
                 return;
 
-            var translateds = settings.Translated;
-            var buferedLength = 0;
+            var translated = Settings.Translated;
+            var bufferedLength = 0;
             var nasha0 = new byte[0];
 
-            for(int i = 0; i < translateds.Count; ++i)
+            for(int i = 0; i < translated.Count; ++i)
             {
-                var methodBytes = settings.Serialize(translateds[i]);
+                var methodBytes = Settings.Serialize(translated[i]);
                 Array.Resize(ref nasha0, nasha0.Length + methodBytes.Count);
-                methodBytes.CopyTo(nasha0, buferedLength);
-                settings.Translated[i].Method.Body.Instructions.Last(x => x.OpCode == OpCodes.Ldc_I4).Operand = buferedLength;
-                buferedLength += methodBytes.Count;
+                methodBytes.CopyTo(nasha0, bufferedLength);
+                Settings.Translated[i].Method.Body.Instructions.Last(x => x.OpCode == OpCodes.Ldc_I4).Operand = bufferedLength;
+                bufferedLength += methodBytes.Count;
             }
 
-            MainSection.Add(new ByteArrayChunk(Compress(nasha0)), 1);
-            Referencies.Add(new ByteArrayChunk(Compress(settings.TranslateReference().ToArray())), 1);
-            OpcodesList.Add(new ByteArrayChunk(settings.TranslateOpcodes().ToArray()), 1);
+            mainSection.Add(new ByteArrayChunk(Compress(nasha0)), 1);
+            references.Add(new ByteArrayChunk(Compress(Settings.TranslateReference().ToArray())), 1);
+            opcodesList.Add(new ByteArrayChunk(NashaSettings.TranslateOpcodes().ToArray()), 1);
 
-            NashaSections.Add(MainSection);
-            NashaSections.Add(Referencies);
-            NashaSections.Add(OpcodesList);
+            NashaSections.Add(mainSection);
+            NashaSections.Add(references);
+            NashaSections.Add(opcodesList);
         }
 
         private static void AddParameters(MethodDef method)
@@ -172,15 +171,13 @@ namespace Nasha.CLI
 
         private static byte[] Compress(byte[] array)
         {
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            using (var def = new DeflateStream(ms, CompressionLevel.Optimal))
             {
-                using (var def = new DeflateStream(ms, CompressionLevel.Optimal))
-                {
-                    def.Write(array, 0, array.Length);
-                }
-
-                return ms.ToArray();
+                def.Write(array, 0, array.Length);
             }
+
+            return ms.ToArray();
         }
     }
 }

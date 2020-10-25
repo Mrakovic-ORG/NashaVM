@@ -1,6 +1,7 @@
 ﻿using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using Nasha.CLI.Core;
+using System;
 
 namespace Nasha.CLI.Handlers
 {
@@ -13,12 +14,15 @@ namespace Nasha.CLI.Handlers
         public NashaInstruction Translation(NashaSettings settings, MethodDef method, int index)
         {
             var arg = method.Body.Instructions[index].GetParameterIndex();
-            return new NashaInstruction(NashaOpcodes.Ldarg, arg);
+            return new NashaInstruction(NashaOpcodes.Ldarg, (short)arg);
         }
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
-            return new[] { (byte)NashaOpcodes.Ldarg.ShuffledID };
+            var buf = new byte[3];
+            buf[0] = (byte)NashaOpcodes.Ldarg.ShuffledID;
+            Array.Copy(BitConverter.GetBytes((short)instruction.Operand), 0, buf, 1, 2);
+            return buf;
         }
     }
 }

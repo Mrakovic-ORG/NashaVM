@@ -64,9 +64,13 @@
     <Compile Include="Handlers\Brtrue.cs" />
     <Compile Include="Handlers\Brfalse.cs" />
     <Compile Include="Handlers\Call.cs" />
+    <Compile Include="Handlers\Castclass.cs" />
     <Compile Include="Handlers\LdcI4.cs" />
     <Compile Include="Handlers\Ldarg.cs" />
+    <Compile Include="Handlers\Ldftn.cs" />
     <Compile Include="Handlers\Newarr.cs" />
+    <Compile Include="Handlers\Newobj.cs" />
+    <Compile Include="Handlers\Dup.cs" />
     <Compile Include="Handlers\Stloc.cs" />
     <Compile Include="Handlers\Ldloc.cs" />
     <Compile Include="Handlers\Ldsfld.cs" />

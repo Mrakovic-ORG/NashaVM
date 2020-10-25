@@ -15,20 +15,22 @@ namespace Nasha.CLI.Handlers
         {
             var field = ((IField)method.Body.Instructions[index].Operand);
             var assemblyName = field.Module.Assembly.FullName;
+
             if (!settings.References.Contains(assemblyName))
                 settings.References.Add(assemblyName);
 
-            return new NashaInstruction(NashaOpcodes.Ldsfld, new Tuple<short, IField>((short)settings.References.IndexOf(assemblyName), field));
+            return new NashaInstruction(NashaOpcodes.Ldsfld, new Tuple<short, IField, bool>((short)settings.References.IndexOf(assemblyName), field, field.FieldSig.ContainsGenericParameter));
         }
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
-            var buf = new byte[7];
-
+            var buf = new byte[8];
             buf[0] = (byte)NashaOpcodes.Ldsfld.ShuffledID;
-            var (referenceId, field) = (Tuple<short, IField>)instruction.Operand;
-            Array.Copy(BitConverter.GetBytes(referenceId), 0, buf, 1, 2);
-            Array.Copy(BitConverter.GetBytes(TokenGetter.GetFieldToken(field)), 0, buf, 3, 4);
+
+            var (referenceId, field, isGeneric) = (Tuple<short, IField, bool>)instruction.Operand;
+            Array.Copy(BitConverter.GetBytes(isGeneric), 0, buf, 1, 1);
+            Array.Copy(BitConverter.GetBytes(referenceId), 0, buf, 2, 2);
+            Array.Copy(BitConverter.GetBytes(TokenGetter.GetFieldToken(field)), 0, buf, 4, 4);
             return buf;
         }
     }

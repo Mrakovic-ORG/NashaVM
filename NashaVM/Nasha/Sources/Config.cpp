@@ -37,12 +37,21 @@ void Config::SetupDiscover()
 	auto DiscoverReader = Reader->BeginReadString(ctx.marshal_as<std::string>(
 		System::Reflection::Assembly::GetCallingAssembly()->ManifestModule->Assembly->Location).c_str(), -1, ".Nasha2");
 
-	auto jamaica = (String^)DiscoverReader;
-	auto stdStr = ctx.marshal_as<std::string>(jamaica);
+	auto discoverstr = (String^)DiscoverReader;
+	auto stdStr = ctx.marshal_as<std::string>(discoverstr);
 
 	OpcodeDiscover* discover = new OpcodeDiscover(stdStr);
 
 	// Instantiates the handler linking class.
 	glob->Handlers = new HandlerLinker(discover);
+}
 
+void Config::SetupBody()
+{
+	msclr::interop::marshal_context ctx;
+	SectionReader* Reader = new SectionReader();
+
+	auto Bytes = Reader->BeginReadBytes(ctx.marshal_as<std::string>(
+		System::Reflection::Assembly::GetCallingAssembly()->ManifestModule->Assembly->Location).c_str(), ".Nasha0");
+	glob->VMBytes = new VMBytes(Bytes);
 }

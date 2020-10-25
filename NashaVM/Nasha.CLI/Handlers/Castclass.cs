@@ -5,11 +5,11 @@ using System;
 
 namespace Nasha.CLI.Handlers
 {
-    public class Newarr : IHandler
+    public class Castclass : IHandler
     {
-        public NashaOpcode Handler => NashaOpcodes.Newarr;
+        public NashaOpcode Handler => NashaOpcodes.Castclass;
 
-        public OpCode[] Inputs => new[] { OpCodes.Newarr };
+        public OpCode[] Inputs => new[] { OpCodes.Castclass };
 
         public NashaInstruction Translation(NashaSettings settings, MethodDef method, int index)
         {
@@ -18,13 +18,13 @@ namespace Nasha.CLI.Handlers
 
             if (!settings.References.Contains(asmName))
                 settings.References.Add(asmName);
-            return new NashaInstruction(NashaOpcodes.Newarr, new Tuple<short, ITypeDefOrRef>((short)settings.References.IndexOf(asmName), operand));
+            return new NashaInstruction(NashaOpcodes.Castclass, new Tuple<short, ITypeDefOrRef>((short)settings.References.IndexOf(asmName), operand));
         }
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var buf = new byte[7];
-            buf[0] = (byte)NashaOpcodes.Newarr.ShuffledID;
+            buf[0] = (byte)NashaOpcodes.Castclass.ShuffledID;
             var (referenceId, type) = (Tuple<short, ITypeDefOrRef>)instruction.Operand;
             Array.Copy(BitConverter.GetBytes(referenceId), 0, buf, 1, 2);
             Array.Copy(BitConverter.GetBytes(TokenGetter.GetTypeToken(type)), 0, buf, 3, 4);

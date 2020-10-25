@@ -8,9 +8,20 @@ public:
 	{
 		Int32 Position = (Int32)(Object^)operand;
 		auto Value = (Object^)body->GetStack()->Pop();
-		if (Value != nullptr && (bool)Value)
+		if (Value != nullptr)
 		{
-			body->SetActualFlow((Int32^)(Position));
+			auto isBool = dynamic_cast<bool^>(Value) != nullptr;
+			if (isBool)
+			{
+				if ((bool)Value)
+				{
+					body->SetActualFlow((Int32^)(Position));
+				}
+			}
+			else 
+			{
+				body->SetActualFlow((Int32^)(Position));
+			}
 		}
 	}
 	static gcroot<Object^> Constructor(msclr::gcroot<VMBody^>& body)

@@ -10,10 +10,7 @@ namespace Nasha.CLI.Core
     {
         public static NashaOpcode Lookup(this List<NashaOpcode> Opcodes, string Find)
         {
-            foreach (var Opcode in Opcodes)
-                if (Opcode.Name == Find)
-                    return Opcode;
-            return null;
+            return Opcodes.FirstOrDefault(opcode => opcode.Name == Find);
         }
 
         public static void Shuffle<T>(this IList<T> list)

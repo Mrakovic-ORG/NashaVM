@@ -5,29 +5,30 @@ using System;
 
 namespace Nasha.CLI.Handlers
 {
-    public class Newarr : IHandler
+    public class Ldftn : IHandler
     {
-        public NashaOpcode Handler => NashaOpcodes.Newarr;
+        public NashaOpcode Handler => NashaOpcodes.Ldftn;
 
-        public OpCode[] Inputs => new[] { OpCodes.Newarr };
+        public OpCode[] Inputs => new[] { OpCodes.Ldftn };
 
         public NashaInstruction Translation(NashaSettings settings, MethodDef method, int index)
         {
-            var operand = ((ITypeDefOrRef)method.Body.Instructions[index].Operand);
+            var operand = ((IMethod)method.Body.Instructions[index].Operand);
             var asmName = operand.Module.Assembly.FullName;
 
             if (!settings.References.Contains(asmName))
                 settings.References.Add(asmName);
-            return new NashaInstruction(NashaOpcodes.Newarr, new Tuple<short, ITypeDefOrRef>((short)settings.References.IndexOf(asmName), operand));
+            return new NashaInstruction(NashaOpcodes.Ldftn, new Tuple<short, IMethod>((short)settings.References.IndexOf(asmName), operand));
         }
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var buf = new byte[7];
-            buf[0] = (byte)NashaOpcodes.Newarr.ShuffledID;
-            var (referenceId, type) = (Tuple<short, ITypeDefOrRef>)instruction.Operand;
+            buf[0] = (byte)NashaOpcodes.Ldftn.ShuffledID;
+            var (referenceId, method) = (Tuple<short, IMethod>)instruction.Operand;
+
             Array.Copy(BitConverter.GetBytes(referenceId), 0, buf, 1, 2);
-            Array.Copy(BitConverter.GetBytes(TokenGetter.GetTypeToken(type)), 0, buf, 3, 4);
+            Array.Copy(BitConverter.GetBytes(TokenGetter.GetMdToken(method)), 0, buf, 3, 4);
             return buf;
         }
     }

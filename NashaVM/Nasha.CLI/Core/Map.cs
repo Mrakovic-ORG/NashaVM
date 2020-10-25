@@ -10,7 +10,7 @@ namespace Nasha.CLI.Core
     public static class Map
     {
         private static readonly Dictionary<OpCode, IHandler> OpCodeToHandler = new Dictionary<OpCode, IHandler>();
-        private static readonly Dictionary<NashaOpcode, IHandler> VMOpCodeToHandler = new Dictionary<NashaOpcode, IHandler>();
+        private static readonly Dictionary<NashaOpcode, IHandler> VmOpCodeToHandler = new Dictionary<NashaOpcode, IHandler>();
 
         static Map()
         {
@@ -24,7 +24,7 @@ namespace Nasha.CLI.Core
                 foreach (var opcode in instance.Inputs)
                     OpCodeToHandler.Add(opcode, instance);
 
-                VMOpCodeToHandler.Add(instance.Handler, instance);
+                VmOpCodeToHandler.Add(instance.Handler, instance);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Nasha.CLI.Core
 
         public static IHandler Lookup(NashaOpcode opcode)
         {
-            return VMOpCodeToHandler.ContainsKey(opcode) ? VMOpCodeToHandler[opcode] : null;
+            return VmOpCodeToHandler.ContainsKey(opcode) ? VmOpCodeToHandler[opcode] : null;
         }
     }
 }

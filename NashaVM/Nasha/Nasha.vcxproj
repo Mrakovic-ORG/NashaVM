@@ -156,7 +156,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\DiscoverInstruction.cpp" />
+    <ClCompile Include="Sources\Handlers\Castclass.cpp" />
+    <ClCompile Include="Sources\Handlers\Dup.cpp" />
     <ClCompile Include="Sources\Handlers\Ldarg.cpp" />
+    <ClCompile Include="Sources\Handlers\Ldftn.cpp" />
+    <ClCompile Include="Sources\Handlers\Newarr.cpp" />
+    <ClCompile Include="Sources\Handlers\Newobj.cpp" />
     <ClCompile Include="Sources\OpcodeDiscover.cpp" />
     <ClCompile Include="Sources\Handlers\Br.cpp" />
     <ClCompile Include="Sources\Handlers\Brfalse.cpp" />
@@ -183,6 +188,7 @@
     <ClCompile Include="Sources\VMBody.cpp" />
     <ClCompile Include="Sources\Handlers\Stsfld.cpp" />
     <ClCompile Include="Sources\NStringReader.cpp" />
+    <ClCompile Include="Sources\VMBytes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Config.hpp" />
@@ -192,6 +198,7 @@
     <ClInclude Include="Headers\HandlerLinker.hpp" />
     <ClInclude Include="Headers\OpcodeDiscover.hpp" />
     <ClInclude Include="Headers\NStringReader.hpp" />
+    <ClInclude Include="Headers\VMBytes.hpp" />
     <ClInclude Include="Sources\Handlers\LdcI4.cpp" />
     <ClInclude Include="Headers\ParameterParser.hpp" />
     <ClInclude Include="Headers\Locals.hpp" />

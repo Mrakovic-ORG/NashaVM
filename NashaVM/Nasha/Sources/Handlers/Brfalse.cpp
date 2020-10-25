@@ -13,17 +13,15 @@ public:
 
 		if (Value != nullptr)
 		{
-			if (dynamic_cast<String^>(Value) != nullptr)
-			{
-				if ((String^)Value == nullptr)
-				{
-					body->SetActualFlow((Int32^)(Postion));
-				}
-			}
-			else
+			auto isBool = dynamic_cast<bool^>(Value) != nullptr;
+			if (isBool)
 			{
 				if (!(bool)Value)
 					body->SetActualFlow((Int32^)(Postion));
+			}
+			else
+			{
+				return;
 			}
 		}
 	}
