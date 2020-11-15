@@ -18,6 +18,7 @@
 #include "./Handlers/Newobj.cpp"
 #include "./Handlers/Dup.cpp"
 #include "./Handlers/Ldftn.cpp"
+#include "./Handlers/LdcR8.cpp"
 
 #pragma managed(push,off)
 /// <summary>
@@ -44,6 +45,7 @@ HandlerLinker::HandlerLinker(OpcodeDiscover* discover)
 	OpcodesPointers[discover->GetOpcodeAllocatedInto(16)] = &Newobj::Run;
 	OpcodesPointers[discover->GetOpcodeAllocatedInto(17)] = &Dup::Run;
 	OpcodesPointers[discover->GetOpcodeAllocatedInto(18)] = &Ldftn::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(19)] = &LdcR8::Run;
 
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(0)] = &Ret::Constructor;
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(1)] = &LdcI4::Constructor;
@@ -64,5 +66,6 @@ HandlerLinker::HandlerLinker(OpcodeDiscover* discover)
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(16)] = &Newobj::Constructor;
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(17)] = &Dup::Constructor;
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(18)] = &Ldftn::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(19)] = &LdcR8::Constructor;
 }
 #pragma managed(pop)

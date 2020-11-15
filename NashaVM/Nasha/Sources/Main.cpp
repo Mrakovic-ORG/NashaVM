@@ -12,7 +12,7 @@ public:
 	{
 		msclr::interop::marshal_context ctx;
 		msclr::gcroot<Object^>* OperandPtr = new msclr::gcroot<Object^>();
-		int InstructionsCount = 0;
+		size_t InstructionsCount = 0;
 		msclr::gcroot<VMBody^>* body = new msclr::gcroot<VMBody^>();
 		vector<msclr::gcroot<Tuple<Int32, Object^>^>> Instructions;
 
@@ -32,7 +32,7 @@ public:
 		// 2b..6b -> Operand (example: 0x04D2)
 		//
 
-		for (int i = 0; i < InstructionsCount; ++i)
+		for (size_t i = 0; i < InstructionsCount; ++i)
 		{
 			// Get the ID of an instruction that goes to the handler
 			Int32 handID = (*body)->GetReader()->ReadByte();

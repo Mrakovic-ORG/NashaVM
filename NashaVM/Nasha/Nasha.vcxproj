@@ -159,6 +159,7 @@
     <ClCompile Include="Sources\Handlers\Castclass.cpp" />
     <ClCompile Include="Sources\Handlers\Dup.cpp" />
     <ClCompile Include="Sources\Handlers\Ldarg.cpp" />
+    <ClCompile Include="Sources\Handlers\LdcR8.cpp" />
     <ClCompile Include="Sources\Handlers\Ldftn.cpp" />
     <ClCompile Include="Sources\Handlers\Newarr.cpp" />
     <ClCompile Include="Sources\Handlers\Newobj.cpp" />

@@ -67,6 +67,7 @@
     <Compile Include="Handlers\Castclass.cs" />
     <Compile Include="Handlers\LdcI4.cs" />
     <Compile Include="Handlers\Ldarg.cs" />
+    <Compile Include="Handlers\LdcR8.cs" />
     <Compile Include="Handlers\Ldftn.cs" />
     <Compile Include="Handlers\Newarr.cs" />
     <Compile Include="Handlers\Newobj.cs" />

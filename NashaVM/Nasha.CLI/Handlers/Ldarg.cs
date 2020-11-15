@@ -13,8 +13,7 @@ namespace Nasha.CLI.Handlers
 
         public NashaInstruction Translation(NashaSettings settings, MethodDef method, int index)
         {
-            var arg = method.Body.Instructions[index].GetParameterIndex();
-            return new NashaInstruction(NashaOpcodes.Ldarg, (short)arg);
+            return new NashaInstruction(NashaOpcodes.Ldarg, (short)method.Body.Instructions[index].GetParameterIndex());
         }
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)

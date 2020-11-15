@@ -30,7 +30,7 @@ public:
 		{
 			fieldValue = Convert::ChangeType(fieldValue, field->FieldType);
 		}
-		catch (Exception^ ex)
+		catch (...)
 		{
 		}
 		field->SetValue(instanceField, fieldValue);

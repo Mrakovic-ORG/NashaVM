@@ -23,7 +23,7 @@ gcroot<cli::array<Object^>^> ParameterParser::Parser(gcroot<cli::array<Object^>^
 			{
 				Fixedparameters[index] = Convert::ChangeType((int)parameters[index], param->ParameterType);
 			}
-			catch (Exception^ ex)
+			catch (...)
 			{
 				Fixedparameters[index] = ChangeType((int)parameters[index], param->ParameterType);
 			}

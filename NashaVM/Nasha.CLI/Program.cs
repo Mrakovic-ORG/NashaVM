@@ -56,11 +56,42 @@ namespace Nasha.CLI
             globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
             globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configVmBytes));
 
+            Console.WriteLine("Just virtualize methods marked with ObfuscationAttribute? (y/n)"); //https://github.com/Mrakovic-ORG/NashaVM/wiki/ObfuscationAttribute
+            var key = Console.ReadKey();
+            var choosed = (key.Key == ConsoleKey.Enter) ? true : ((key.Key == ConsoleKey.Y) ? true : false);
+
             foreach (var type in module.Types)
             {
                 if (type.IsGlobalModuleType) continue;
                 foreach (var method in type.Methods)
                 {
+                    if (choosed)
+                    {
+                        foreach (var attr in method.CustomAttributes)
+                            if (attr.AttributeType.TypeName == method.Module.Import(typeof(System.Reflection.ObfuscationAttribute)).TypeName)
+                            {
+                                if (attr.Properties.FirstOrDefault(x => x.Name == "Feature" && x.Value.ToString() == "virt") != null)
+                                {
+                                    if (attr.Properties.FirstOrDefault(x => x.Name == "StripAfterObfuscation") is var StripAfterObfuscation && StripAfterObfuscation != null)
+                                    {
+                                        if ((bool)StripAfterObfuscation.Value == true)
+                                            method.CustomAttributes.Remove(attr);
+                                    }
+                                    else
+                                    {
+                                        method.CustomAttributes.Remove(attr);
+                                    }
+                                    if (attr.Properties.FirstOrDefault(x => x.Name == "ApplyToMembers") is var ApplyToMembers && ApplyToMembers != null)
+                                    {
+                                        if ((bool)ApplyToMembers.Value == false)
+                                            continue;
+                                    }
+                                    goto virt;
+                                }
+                            }
+                        continue;
+                    }
+                virt:
                     if (!method.HasBody || !method.Body.HasInstructions) continue;
                     var translated = Translator.Translate(Settings, method);
                     if (translated == null)
@@ -68,6 +99,16 @@ namespace Nasha.CLI
                     Settings.Translated.Add(new Translated(method, translated));
                 }
             }
+
+            globalConstructor.Body.Instructions.Insert(0, OpCodes.Newobj.ToInstruction(configCtor));
+            globalConstructor.Body.Instructions.Insert(1, OpCodes.Stsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(configSetup));
+            globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configDiscover));
+            globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configVmBytes));
+
             foreach (var translated in Settings.Translated)
             {
                 translated.Method.Body = new CilBody() { MaxStack = 1 };
@@ -118,7 +159,7 @@ namespace Nasha.CLI
             var bufferedLength = 0;
             var nasha0 = new byte[0];
 
-            for(int i = 0; i < translated.Count; ++i)
+            for (int i = 0; i < translated.Count; ++i)
             {
                 var methodBytes = Settings.Serialize(translated[i]);
                 Array.Resize(ref nasha0, nasha0.Length + methodBytes.Count);

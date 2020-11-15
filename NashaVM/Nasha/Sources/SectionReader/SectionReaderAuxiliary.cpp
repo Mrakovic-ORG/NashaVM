@@ -40,9 +40,9 @@ public:
 	{
 		string listHEX = "";
 
-		int index = 0;
-		int i = 0;
-		const int width = 16;
+		size_t index = 0;
+		size_t i = 0;
+		const size_t width = 16;
 		while (index + width < len)
 		{
 			int i;

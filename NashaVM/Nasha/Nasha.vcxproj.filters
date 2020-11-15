@@ -145,26 +145,29 @@
     <ClCompile Include="Sources\DiscoverInstruction.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Handlers\Ldarg.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Handlers\Castclass.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Handlers\Newarr.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Handlers\Newobj.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Handlers\Dup.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Handlers\Ldftn.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\VMBytes.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Ldarg.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Castclass.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Dup.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Ldftn.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\LdcR8.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Newobj.cpp">
+      <Filter>Sources\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Handlers\Newarr.cpp">
+      <Filter>Sources\Handlers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

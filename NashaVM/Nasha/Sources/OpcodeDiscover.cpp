@@ -40,7 +40,7 @@ void OpcodeDiscover::DiscoverInterpreter()
 	vector<DiscoverInstruction> DiscoverInstructions;
 	vector<tuple<int, int>> Blocks;
 
-	for (int i = 0; i < _data.length(); ++i)
+	for (size_t i = 0; i < _data.length(); ++i)
 	{
 		// Push the Opcode and Operand to the DiscoverInstruction
 		DiscoverInstructions.push_back(DiscoverInstruction(reader->ReadInt32(), reader->ReadInt32()));
@@ -54,7 +54,7 @@ void OpcodeDiscover::DiscoverInterpreter()
 	4 = Set new block
 	*/
 
-	for (int x = 0; x < DiscoverInstructions.size(); ++x)
+	for (size_t x = 0; x < DiscoverInstructions.size(); ++x)
 	{
 		switch (DiscoverInstructions[x].GetOpcode())
 		{
@@ -67,7 +67,7 @@ void OpcodeDiscover::DiscoverInterpreter()
 		}
 	}
 
-	for (int i = 0; i < DiscoverInstructions.size(); ++i)
+	for (size_t i = 0; i < DiscoverInstructions.size(); ++i)
 	{
 		switch (DiscoverInstructions[i].GetOpcode())
 		{

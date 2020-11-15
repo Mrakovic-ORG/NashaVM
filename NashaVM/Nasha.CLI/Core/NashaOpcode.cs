@@ -11,19 +11,21 @@ namespace Nasha.CLI.Core
         public string Name { get; private set; }
         public int ID { get; private set; }
         public int ShuffledID { get; private set; }
+        public int BlockID { get; private set; }
 
         public NashaOpcode(int ID)
         {
             this.ID = ID;
             this.ShuffledID = NashaOpcodes.GenerateInteger();
+            this.BlockID = NashaOpcodes.GenerateBlockInteger();
         }
 
-        public NashaOpcode(string Name, int ID)
-        {
-            this.Name = Name;
-            this.ID = ID;
-            this.ShuffledID = NashaOpcodes.GenerateInteger();
-        }
+        //public NashaOpcode(string Name, int ID)
+        //{
+        //    this.Name = Name;
+        //    this.ID = ID;
+        //    this.ShuffledID = NashaOpcodes.GenerateInteger();
+        //}
     }
 
     public static class NashaOpcodes
@@ -47,22 +49,45 @@ namespace Nasha.CLI.Core
         public static NashaOpcode Newobj = new NashaOpcode(16);
         public static NashaOpcode Dup = new NashaOpcode(17);
         public static NashaOpcode Ldftn = new NashaOpcode(18);
+        public static NashaOpcode LdcR8 = new NashaOpcode(19);
 
         private static int _generatorOffset = 0;
+        private static int _generatorBlockOffset = 0;
 
-        public static int GenerateInteger()
+        static List<int> _generator1;
+        public static int GenerateBlockInteger()
         {
-            var x = RandomNumbers(255);
-            return x[_generatorOffset++];
+            if (_generator1 == null)
+                _generator1 = UniqueRandom(0, 255).ToList();
+            return _generator1[_generatorBlockOffset++];
         }
 
-        private static int[] RandomNumbers(int rangeEx)
+        static List<int> _generator0;
+        public static int GenerateInteger()
         {
-            var orderedList = Enumerable.Range(1, rangeEx);
-            var rng = new Random();
-            var numbers = orderedList.OrderBy(c => rng.Next()).ToArray();
-            numbers.Shuffle();
-            return numbers;
+            if (_generator0 == null)
+                _generator0 = UniqueRandom(0, 255).ToList();
+            return _generator0[_generatorOffset++];
+        }
+
+        private static int tickcount;
+        private static IEnumerable<int> UniqueRandom(int minInclusive, int maxInclusive)
+        {
+            List<int> candidates = new List<int>();
+            for (int i = minInclusive; i <= maxInclusive; i++)
+            {
+                candidates.Add(i);
+            }
+            if (tickcount == 0)
+                tickcount = Environment.TickCount;
+            Random rnd = new Random(tickcount);
+            tickcount *= 2;
+            while (candidates.Count > 0)
+            {
+                int index = rnd.Next(candidates.Count);
+                yield return candidates[index];
+                candidates.RemoveAt(index);
+            }
         }
 
         private static readonly List<NashaOpcode> List = new List<NashaOpcode>();
@@ -90,6 +115,7 @@ namespace Nasha.CLI.Core
             List.Add(Newobj);
             List.Add(Dup);
             List.Add(Ldftn);
+            List.Add(LdcR8);
             return List;
         }
     }

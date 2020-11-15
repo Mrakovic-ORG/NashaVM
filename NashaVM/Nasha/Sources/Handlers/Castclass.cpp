@@ -30,7 +30,7 @@ public:
 		{
 			return Convert::ChangeType(value, type);
 		}
-		catch (Exception^ ex)
+		catch (...)
 		{
 			return (Object^)ParameterParser::ChangeType((int)value, type);
 		}
