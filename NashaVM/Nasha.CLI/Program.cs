@@ -4,12 +4,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using dnlib.DotNet.Writer;
 using Nasha.CLI.Core;
+using System.Drawing;
+using Console = Colorful.Console;
+using Extensions = Nasha.CLI.Core.Extensions;
 
 namespace Nasha.CLI
 {
@@ -18,11 +19,16 @@ namespace Nasha.CLI
         private static readonly NashaSettings Settings = new NashaSettings();
         private static readonly List<PESection> NashaSections = new List<PESection>();
 
+        private static readonly Color SuccessDarkColor = ColorTranslator.FromHtml("#283593");
+        private static readonly Color SuccessLightColor = ColorTranslator.FromHtml("#3F51B5");
+        private static readonly Color FailedDarkColor = ColorTranslator.FromHtml("#6A1B9A");
+        private static readonly Color FailedLightColor = ColorTranslator.FromHtml("#9C27B0");
+
         private static void Main(string[] args)
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Drag'n drop file.");
+                Extensions.WriteLineFormatted("Please {0} your file.", FailedLightColor, "drag and drop".ToColor(FailedDarkColor));
                 Console.ReadKey();
                 return;
             }
@@ -47,56 +53,82 @@ namespace Nasha.CLI
             var configField = new FieldDefUser("cfg", new FieldSig(configCtor.DeclaringType.ToTypeSig()), dnlib.DotNet.FieldAttributes.Public | dnlib.DotNet.FieldAttributes.Static);
             module.GlobalType.Fields.Add(configField);
             var globalConstructor = module.GlobalType.FindOrCreateStaticConstructor();
-            globalConstructor.Body.Instructions.Insert(0, OpCodes.Newobj.ToInstruction(configCtor));
-            globalConstructor.Body.Instructions.Insert(1, OpCodes.Stsfld.ToInstruction(configField));
-            globalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(configField));
-            globalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(configSetup));
-            globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
-            globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configDiscover));
-            globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
-            globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configVmBytes));
-
-            Console.WriteLine("Just virtualize methods marked with ObfuscationAttribute? (y/n)"); //https://github.com/Mrakovic-ORG/NashaVM/wiki/ObfuscationAttribute
-            var key = Console.ReadKey();
-            var choosed = (key.Key == ConsoleKey.Enter) ? true : ((key.Key == ConsoleKey.Y) ? true : false);
 
             foreach (var type in module.Types)
             {
                 if (type.IsGlobalModuleType) continue;
                 foreach (var method in type.Methods)
                 {
-                    if (choosed)
-                    {
-                        foreach (var attr in method.CustomAttributes)
-                            if (attr.AttributeType.TypeName == method.Module.Import(typeof(System.Reflection.ObfuscationAttribute)).TypeName)
+                    foreach (var attr in method.CustomAttributes)
+                        if (attr.AttributeType.TypeName == method.Module.Import(typeof(System.Reflection.ObfuscationAttribute)).TypeName)
+                        {
+                            if (attr.Properties.FirstOrDefault(x => x.Name == "Feature" && x.Value.ToString() == "virt") != null)
                             {
-                                if (attr.Properties.FirstOrDefault(x => x.Name == "Feature" && x.Value.ToString() == "virt") != null)
+
+                                // If StripAfterObfuscation is set to true Nasha will remove the attribute from the output assembly.
+                                if (attr.Properties.FirstOrDefault(x => x.Name == "StripAfterObfuscation") is var stripAfterObfuscation && stripAfterObfuscation != null)
                                 {
-                                    if (attr.Properties.FirstOrDefault(x => x.Name == "StripAfterObfuscation") is var StripAfterObfuscation && StripAfterObfuscation != null)
-                                    {
-                                        if ((bool)StripAfterObfuscation.Value == true)
-                                            method.CustomAttributes.Remove(attr);
-                                    }
-                                    else
-                                    {
-                                        method.CustomAttributes.Remove(attr);
-                                    }
-                                    if (attr.Properties.FirstOrDefault(x => x.Name == "ApplyToMembers") is var ApplyToMembers && ApplyToMembers != null)
-                                    {
-                                        if ((bool)ApplyToMembers.Value == false)
-                                            continue;
-                                    }
-                                    goto virt;
+                                    var stripObf = (bool)stripAfterObfuscation.Value;
+                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
+                                        "StripAfterObfuscation".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor),
+                                        "Method".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor),
+                                        method.Name.ToString().ToColor(stripObf ? SuccessLightColor : FailedLightColor)
+                                        );
+
+                                    if (stripObf) method.CustomAttributes.Remove(attr);
                                 }
+                                else
+                                {
+                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
+                                        "StripAfterObfuscation".ToColor(SuccessDarkColor),
+                                        "Method".ToColor(SuccessDarkColor),
+                                        method.Name.ToString().ToColor(SuccessLightColor)
+                                        );
+
+                                    method.CustomAttributes.Remove(attr);
+                                }
+
+                                // If ApplyToMembers is set to true Nasha will apply the virtualization to the method itself.
+                                if (attr.Properties.FirstOrDefault(x => x.Name == "ApplyToMembers") is var applyToMembers && applyToMembers != null)
+                                {
+                                    var applyMembers = (bool)applyToMembers.Value;
+                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
+                                        "ApplyToMembers".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor),
+                                        "Method".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor),
+                                        method.Name.ToString().ToColor(applyMembers ? SuccessLightColor : FailedLightColor)
+                                        );
+
+                                    if (!applyMembers) continue;
+                                }
+
+                                goto virt;
                             }
-                        continue;
+                        }
+
+                    virt:
+                    var nashaInstructions = Translator.Translate(Settings, method) ?? null;
+                    var hasInstruction = nashaInstructions != null;
+                    if (hasInstruction) Settings.Translated.Add(new Translated(method, nashaInstructions));
+
+                    if (hasInstruction)
+                    {
+                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n{3}: {4}\n\n",
+                        "Virtualized".ToColor(SuccessDarkColor),
+                        $"Method".ToColor(SuccessDarkColor),
+                        method.Name.ToString().ToColor(SuccessLightColor),
+                        "Instructions".ToColor(SuccessDarkColor),
+                        nashaInstructions.Count.ToString().ToColor(SuccessLightColor)
+                        );
                     }
-                virt:
-                    if (!method.HasBody || !method.Body.HasInstructions) continue;
-                    var translated = Translator.Translate(Settings, method);
-                    if (translated == null)
-                        continue;
-                    Settings.Translated.Add(new Translated(method, translated));
+                    else
+                    {
+                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
+                        "Failed Virtualizing".ToColor(FailedDarkColor),
+                        $"Method".ToColor(FailedDarkColor),
+                        method.Name.ToString().ToColor(FailedLightColor)
+                        );
+                    }
+
                 }
             }
 
@@ -123,7 +155,7 @@ namespace Nasha.CLI
                 translated.Method.Body.Instructions.Add(OpCodes.Ret.ToInstruction());
             }
 
-            var output = Path.GetFileNameWithoutExtension(args[0]) + "-Nasha.exe";
+            var output = Path.GetFileNameWithoutExtension(args[0]) + ".Nasha.exe";
             var writer = new ModuleWriterOptions(module);
 
             writer.WriterEvent += InsertSections;
@@ -132,8 +164,19 @@ namespace Nasha.CLI
             writer.MetadataOptions.Flags = MetadataFlags.AlwaysCreateStringsHeap | MetadataFlags.AlwaysCreateBlobHeap | MetadataFlags.AlwaysCreateGuidHeap | MetadataFlags.AlwaysCreateUSHeap;
             module.Write(output, writer);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[#] Virtualized file saved as \"{output}\"");
+            // Copy Nasha runtime to application path
+            var outputDir = Path.GetDirectoryName(args[0]);
+            if (runtimePath != outputDir) File.Copy(runtimePath, outputDir + "\\Nasha.dll", true);
+
+
+            Extensions.WriteLineFormatted("Virtualized file saved in \"{0}\"\n\n", $"{outputDir}\\{output}".ToColor(SuccessLightColor));
+            Console.WriteWithGradient(@"M""""""""""""""`YM                   dP                M""""MMMMM""""M M""""""""""`'""""""`YM
+M  mmmm.  M                   88                M  MMMMM  M M  mm.  mm.  M
+M  MMMMM  M .d8888b. .d8888b. 88d888b. .d8888b. M  MMMMP  M M  MMM  MMM  M
+M  MMMMM  M 88'  `88 Y8ooooo. 88'  `88 88'  `88 M  MMMM'. M M  MMM  MMM  M
+M  MMMMM  M 88.  .88       88 88    88 88.  .88 M  MMP' .MM M  MMM  MMM  M 
+M  MMMMM  M `88888P8 `88888P' dP    dP `88888P8 M     .dMMM M  MMM  MMM  M 
+MMMNASHAMMM                                     MMMMMMMMMMM MMMMMMMMMMMMMM", SuccessLightColor, FailedLightColor, 6);
             Console.ReadKey();
         }
 
