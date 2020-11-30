@@ -69,21 +69,13 @@ namespace Nasha.CLI
                                 if (attr.Properties.FirstOrDefault(x => x.Name == "StripAfterObfuscation") is var stripAfterObfuscation && stripAfterObfuscation != null)
                                 {
                                     var stripObf = (bool)stripAfterObfuscation.Value;
-                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
-                                        "StripAfterObfuscation".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor),
-                                        "Method".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor),
-                                        method.Name.ToString().ToColor(stripObf ? SuccessLightColor : FailedLightColor)
-                                        );
+                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "StripAfterObfuscation".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor), "Method".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor), method.Name.ToString().ToColor(stripObf ? SuccessLightColor : FailedLightColor));
 
                                     if (stripObf) method.CustomAttributes.Remove(attr);
                                 }
                                 else
                                 {
-                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
-                                        "StripAfterObfuscation".ToColor(SuccessDarkColor),
-                                        "Method".ToColor(SuccessDarkColor),
-                                        method.Name.ToString().ToColor(SuccessLightColor)
-                                        );
+                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "StripAfterObfuscation".ToColor(SuccessDarkColor), "Method".ToColor(SuccessDarkColor), method.Name.ToString().ToColor(SuccessLightColor));
 
                                     method.CustomAttributes.Remove(attr);
                                 }
@@ -92,11 +84,7 @@ namespace Nasha.CLI
                                 if (attr.Properties.FirstOrDefault(x => x.Name == "ApplyToMembers") is var applyToMembers && applyToMembers != null)
                                 {
                                     var applyMembers = (bool)applyToMembers.Value;
-                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
-                                        "ApplyToMembers".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor),
-                                        "Method".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor),
-                                        method.Name.ToString().ToColor(applyMembers ? SuccessLightColor : FailedLightColor)
-                                        );
+                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "ApplyToMembers".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor), "Method".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor), method.Name.ToString().ToColor(applyMembers ? SuccessLightColor : FailedLightColor));
 
                                     if (!applyMembers) continue;
                                 }
@@ -112,21 +100,11 @@ namespace Nasha.CLI
 
                     if (hasInstruction)
                     {
-                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n{3}: {4}\n\n",
-                        "Virtualized".ToColor(SuccessDarkColor),
-                        $"Method".ToColor(SuccessDarkColor),
-                        method.Name.ToString().ToColor(SuccessLightColor),
-                        "Instructions".ToColor(SuccessDarkColor),
-                        nashaInstructions.Count.ToString().ToColor(SuccessLightColor)
-                        );
+                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n{3}: {4}\n\n", "Virtualized".ToColor(SuccessDarkColor), $"Method".ToColor(SuccessDarkColor), method.Name.ToString().ToColor(SuccessLightColor), "Instructions".ToColor(SuccessDarkColor), nashaInstructions.Count.ToString().ToColor(SuccessLightColor));
                     }
                     else
                     {
-                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n",
-                        "Failed Virtualizing".ToColor(FailedDarkColor),
-                        $"Method".ToColor(FailedDarkColor),
-                        method.Name.ToString().ToColor(FailedLightColor)
-                        );
+                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "Failed Virtualizing".ToColor(FailedDarkColor), $"Method".ToColor(FailedDarkColor), method.Name.ToString().ToColor(FailedLightColor));
                     }
 
                 }

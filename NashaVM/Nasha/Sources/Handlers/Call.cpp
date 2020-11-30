@@ -39,6 +39,6 @@ public:
 	}
 	static gcroot<Object^> Constructor(msclr::gcroot<VMBody^>& body)
 	{
-		return gcnew Tuple<Int16, Int32>(body->GetReader()->ReadInt16(), body->GetReader()->ReadInt32());
+		return (Object^)gcnew Tuple<Int16, Int32>(body->GetReader()->ReadInt16(), body->GetReader()->ReadInt32());
 	}
 };

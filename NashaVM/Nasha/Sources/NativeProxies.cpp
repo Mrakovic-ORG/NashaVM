@@ -14,7 +14,7 @@ static msclr::gcroot<Object^> NativeProxy(void* ptr, int handlerID, GSC* glob)
 	typedef msclr::gcroot<Object^>(*fastCast)(msclr::gcroot<VMBody^>&);
 
 	msclr::gcroot<VMBody^>& obj = *((msclr::gcroot<VMBody^>*)ptr);
-	fastCast castOpcode = reinterpret_cast<fastCast>(reinterpret_cast<long>(glob->Handlers->DeserializationPointers[handlerID]));
+	fastCast castOpcode = reinterpret_cast<fastCast>(reinterpret_cast<LONGLONG>(glob->Handlers->DeserializationPointers[handlerID]));
 	return (*(castOpcode))(obj);
 }
 
@@ -32,7 +32,7 @@ static void NativeProxy2(void* ptr, void* operand, int handlerId, GSC* glob)
 	msclr::gcroot<VMBody^>& obj = *((msclr::gcroot<VMBody^>*)ptr);
 	msclr::gcroot<Object^>& Operand = *((msclr::gcroot<Object^>*)operand);
 
-	fastCast castOpcode = reinterpret_cast<fastCast>(reinterpret_cast<long>(glob->Handlers->OpcodesPointers[handlerId]));
+	fastCast castOpcode = reinterpret_cast<fastCast>(reinterpret_cast<LONGLONG>(glob->Handlers->OpcodesPointers[handlerId]));
 	(*(castOpcode))(obj, Operand);
 }
 #pragma managed(pop)

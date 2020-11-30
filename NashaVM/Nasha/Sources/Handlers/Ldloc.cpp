@@ -10,6 +10,6 @@ public:
 	}
 	static gcroot<Object^> Constructor(msclr::gcroot<VMBody^>& body)
 	{
-		return body->GetReader()->ReadInt32();
+		return (Object^)body->GetReader()->ReadInt32();
 	}
 };

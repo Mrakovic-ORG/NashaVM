@@ -11,6 +11,6 @@ public:
 	}
 	static gcroot<Object^> Constructor(msclr::gcroot<VMBody^>& body)
 	{
-		return body->GetReader()->ReadInt16();
+		return (Object^)body->GetReader()->ReadInt16();
 	}
 };
