@@ -3,6 +3,7 @@
 #include "Stack.hpp"
 #include "Globals.hpp"
 #include "Locals.hpp"
+#include "Arithmetics.hpp"
 
 using namespace std;
 using namespace msclr::interop;
@@ -22,6 +23,7 @@ private:
 	NStack* _stack;
 	GSC* _glob;
 	Locals^ _locals;
+	Arithmetics^ _arithmetics;
 public:
 	msclr::gcroot<cli::array<Object^>^> GetParameters();
 	msclr::gcroot<BinaryReader^> GetReader();
@@ -33,4 +35,5 @@ public:
 	NStack* GetStack();
 	GSC* Global();
 	Locals^ GetLocals();
+	Arithmetics^ GetArithmetics();
 };

@@ -64,11 +64,16 @@
     <Compile Include="Core\TokenGetter.cs" />
     <Compile Include="Core\Translated.cs" />
     <Compile Include="Core\Translator.cs" />
+    <Compile Include="Handlers\Xor.cs" />
+    <Compile Include="Handlers\Div.cs" />
+    <Compile Include="Handlers\Mul.cs" />
+    <Compile Include="Handlers\Sub.cs" />
     <Compile Include="Handlers\Br.cs" />
     <Compile Include="Handlers\Brtrue.cs" />
     <Compile Include="Handlers\Brfalse.cs" />
     <Compile Include="Handlers\Call.cs" />
     <Compile Include="Handlers\Castclass.cs" />
+    <Compile Include="Handlers\Add.cs" />
     <Compile Include="Handlers\LdcI4.cs" />
     <Compile Include="Handlers\Ldarg.cs" />
     <Compile Include="Handlers\LdcR8.cs" />

@@ -51,6 +51,12 @@ namespace Nasha.CLI.Core
         public static NashaOpcode Ldftn = new NashaOpcode(18);
         public static NashaOpcode LdcR8 = new NashaOpcode(19);
 
+        public static NashaOpcode Add = new NashaOpcode(20);
+        public static NashaOpcode Sub = new NashaOpcode(21);
+        public static NashaOpcode Mul = new NashaOpcode(22);
+        public static NashaOpcode Div = new NashaOpcode(23);
+        public static NashaOpcode Xor = new NashaOpcode(24);
+
         private static int _generatorOffset = 0;
         private static int _generatorBlockOffset = 0;
 
@@ -116,6 +122,11 @@ namespace Nasha.CLI.Core
             List.Add(Dup);
             List.Add(Ldftn);
             List.Add(LdcR8);
+            List.Add(Add);
+            List.Add(Sub);
+            List.Add(Mul);
+            List.Add(Div);
+            List.Add(Xor);
             return List;
         }
     }

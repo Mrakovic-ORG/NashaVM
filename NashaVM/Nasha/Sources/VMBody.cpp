@@ -14,7 +14,7 @@ VMBody::VMBody(msclr::gcroot<BinaryReader^> reader, msclr::gcroot<cli::array<Obj
 	_flow = new msclr::gcroot<Int32^>(0);
 	_stack = new NStack();
 	_locals = gcnew Locals();
-
+	_arithmetics = gcnew Arithmetics();
 }
 
 /// <summary>
@@ -98,4 +98,9 @@ GSC* VMBody::Global()
 Locals^ VMBody::GetLocals()
 {
 	return _locals;
+}
+
+Arithmetics^ VMBody::GetArithmetics()
+{
+	return _arithmetics;
 }

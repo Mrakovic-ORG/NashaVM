@@ -110,6 +110,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -132,6 +133,7 @@
       <OptimizeReferences>
       </OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -173,13 +175,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\DiscoverInstruction.cpp" />
+    <ClCompile Include="Sources\Handlers\Add.cpp" />
     <ClCompile Include="Sources\Handlers\Castclass.cpp" />
+    <ClCompile Include="Sources\Handlers\Div.cpp" />
     <ClCompile Include="Sources\Handlers\Dup.cpp" />
     <ClCompile Include="Sources\Handlers\Ldarg.cpp" />
     <ClCompile Include="Sources\Handlers\LdcR8.cpp" />
     <ClCompile Include="Sources\Handlers\Ldftn.cpp" />
+    <ClCompile Include="Sources\Handlers\Mul.cpp" />
     <ClCompile Include="Sources\Handlers\Newarr.cpp" />
     <ClCompile Include="Sources\Handlers\Newobj.cpp" />
+    <ClCompile Include="Sources\Handlers\Sub.cpp" />
+    <ClCompile Include="Sources\Handlers\Xor.cpp" />
     <ClCompile Include="Sources\OpcodeDiscover.cpp" />
     <ClCompile Include="Sources\Handlers\Br.cpp" />
     <ClCompile Include="Sources\Handlers\Brfalse.cpp" />
@@ -209,6 +216,7 @@
     <ClCompile Include="Sources\VMBytes.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Arithmetics.hpp" />
     <ClInclude Include="Headers\Config.hpp" />
     <ClInclude Include="Headers\DiscoverInstruction.hpp" />
     <ClInclude Include="Headers\DotnetReferences.hpp" />

@@ -19,6 +19,11 @@
 #include "./Handlers/Dup.cpp"
 #include "./Handlers/Ldftn.cpp"
 #include "./Handlers/LdcR8.cpp"
+#include "./Handlers/Add.cpp"
+#include "./Handlers/Sub.cpp"
+#include "./Handlers/Mul.cpp"
+#include "./Handlers/Div.cpp"
+#include "./Handlers/Xor.cpp"
 
 #pragma managed(push,off)
 /// <summary>
@@ -46,6 +51,11 @@ HandlerLinker::HandlerLinker(OpcodeDiscover* discover)
 	OpcodesPointers[discover->GetOpcodeAllocatedInto(17)] = &Dup::Run;
 	OpcodesPointers[discover->GetOpcodeAllocatedInto(18)] = &Ldftn::Run;
 	OpcodesPointers[discover->GetOpcodeAllocatedInto(19)] = &LdcR8::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(20)] = &Add::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(21)] = &Sub::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(22)] = &Mul::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(23)] = &Div::Run;
+	OpcodesPointers[discover->GetOpcodeAllocatedInto(24)] = &Xor::Run;
 
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(0)] = &Ret::Constructor;
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(1)] = &LdcI4::Constructor;
@@ -67,5 +77,10 @@ HandlerLinker::HandlerLinker(OpcodeDiscover* discover)
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(17)] = &Dup::Constructor;
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(18)] = &Ldftn::Constructor;
 	DeserializationPointers[discover->GetOpcodeAllocatedInto(19)] = &LdcR8::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(20)] = &Add::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(21)] = &Sub::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(22)] = &Mul::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(23)] = &Div::Constructor;
+	DeserializationPointers[discover->GetOpcodeAllocatedInto(24)] = &Xor::Constructor;
 }
 #pragma managed(pop)
