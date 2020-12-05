@@ -49,11 +49,16 @@ namespace Nasha.CLI
             module.GlobalType.Fields.Add(configField);
             var globalConstructor = module.GlobalType.FindOrCreateStaticConstructor();
 
+            Console.WriteLine("Do you want bypass ObfuscationAttributes? y/n (default y) ");
+            bool bypass = Console.ReadKey().Key != ConsoleKey.N;
+
             foreach (var type in module.Types)
             {
                 if (type.IsGlobalModuleType) continue;
                 foreach (var method in type.Methods)
                 {
+                    if (bypass)
+                        goto virt;
                     foreach (var attr in method.CustomAttributes)
                         if (attr.AttributeType.TypeName == method.Module.Import(typeof(System.Reflection.ObfuscationAttribute)).TypeName)
                         {
@@ -88,7 +93,9 @@ namespace Nasha.CLI
                             }
                         }
 
-                    virt:
+                    continue;
+
+                virt:
                     var nashaInstructions = Translator.Translate(Settings, method) ?? null;
                     var hasInstruction = nashaInstructions != null;
                     if (hasInstruction) Settings.Translated.Add(new Translated(method, nashaInstructions));
