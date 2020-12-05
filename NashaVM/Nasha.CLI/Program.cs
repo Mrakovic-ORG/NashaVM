@@ -139,7 +139,7 @@ namespace Nasha.CLI
 
             // Copy Nasha runtime to application path
             var outputDir = Path.GetDirectoryName(args[0]);
-            if (runtimePath != outputDir) File.Copy(runtimePath, outputDir + "\\Nasha.dll", true);
+            if (Directory.GetCurrentDirectory() != outputDir) File.Copy(runtimePath, outputDir + "\\Nasha.dll", true);
 
 
             Extensions.WriteLineFormatted("Virtualized file saved in \"{0}\"\n\n", $"{outputDir}\\{output}".ToColor(SuccessLightColor));
