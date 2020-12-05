@@ -90,6 +90,7 @@
     <Compile Include="Handlers\Ret.cs" />
     <Compile Include="Core\IHandler.cs" />
     <Compile Include="Handlers\Stsfld.cs" />
+    <Compile Include="Helpers\Injection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

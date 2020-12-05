@@ -11,6 +11,7 @@ using Nasha.CLI.Core;
 using System.Drawing;
 using Console = Colorful.Console;
 using Extensions = Nasha.CLI.Core.Extensions;
+using Nasha.CLI.Helpers;
 
 namespace Nasha.CLI
 {
@@ -36,19 +37,13 @@ namespace Nasha.CLI
 
             var runtimePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Nasha.dll");
             var runtime = ModuleDefMD.Load(runtimePath);
-            IMethod runMethod = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == "Execute");
-            IMethod runCtor = runtime.Types.ToArray().First(x => x.Name == "Main").Methods.First(x => x.Name == ".ctor");
-            IMethod configCtor = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == ".ctor");
-            IMethod configSetup = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupReferences");
-            IMethod configDiscover = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupDiscover");
-            IMethod configVmBytes = runtime.Types.ToArray().First(x => x.Name == "Config").Methods.First(x => x.Name == "SetupBody");
 
-            runMethod = module.Import(runMethod);
-            runCtor = module.Import(runCtor);
-            configCtor = module.Import(configCtor);
-            configSetup = module.Import(configSetup);
-            configDiscover = module.Import(configDiscover);
-            configVmBytes = module.Import(configVmBytes);
+            IMethod runMethod = Injection.InjectRuntimeMethod(runtime, module, "Main", "Execute");
+            IMethod runCtor = Injection.InjectRuntimeMethod(runtime, module, "Main", ".ctor");
+            IMethod configCtor = Injection.InjectRuntimeMethod(runtime, module, "Config", ".ctor");
+            IMethod configSetup = Injection.InjectRuntimeMethod(runtime, module, "Config", "SetupReferences");
+            IMethod configDiscover = Injection.InjectRuntimeMethod(runtime, module, "Config", "SetupDiscover");
+            IMethod configVmBytes = Injection.InjectRuntimeMethod(runtime, module, "Config", "SetupBody");
 
             var configField = new FieldDefUser("cfg", new FieldSig(configCtor.DeclaringType.ToTypeSig()), dnlib.DotNet.FieldAttributes.Public | dnlib.DotNet.FieldAttributes.Static);
             module.GlobalType.Fields.Add(configField);
