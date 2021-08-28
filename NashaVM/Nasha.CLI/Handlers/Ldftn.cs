@@ -24,7 +24,7 @@ namespace Nasha.CLI.Handlers
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var buf = new byte[7];
-            buf[0] = (byte)NashaOpcodes.Ldftn.ShuffledID;
+            buf[0] = (byte)NashaOpcodes.Ldftn.ShuffledIdentifier;
             var (referenceId, method) = (Tuple<short, IMethod>)instruction.Operand;
 
             Array.Copy(BitConverter.GetBytes(referenceId), 0, buf, 1, 2);

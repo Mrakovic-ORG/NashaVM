@@ -20,7 +20,7 @@ namespace Nasha.CLI.Handlers
         {
             var buf = new byte[5];
 
-            buf[0] = (byte)NashaOpcodes.Brtrue.ShuffledID;
+            buf[0] = (byte)NashaOpcodes.Brtrue.ShuffledIdentifier;
             Array.Copy(BitConverter.GetBytes((int)instruction.Operand), 0, buf, 1, 4);
             return buf;
         }

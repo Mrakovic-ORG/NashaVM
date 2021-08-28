@@ -55,14 +55,14 @@ namespace Nasha.CLI.Core
             int Nothing = 5;
             int ExitBlock = random.Next(256, 1337);
 
-            var list = NashaOpcodes.OpcodesList().ToList();
+            var list = NashaOpcodes.OpcodesList();
             var blocks = new List<OpcodesBlock>();
 
             for (int i = 0; i < list.Count; ++i)
             {
                 var stub = new List<byte>();
                 stub.AddRange(BitConverter.GetBytes(SetBlock));
-                stub.AddRange(BitConverter.GetBytes(list[i].BlockID));
+                stub.AddRange(BitConverter.GetBytes(list[i].BlockIdentifier));
 
                 if (random.Next(0, 2) == 1)
                 {
@@ -71,23 +71,23 @@ namespace Nasha.CLI.Core
                 }
 
                 stub.AddRange(BitConverter.GetBytes(Push));
-                stub.AddRange(BitConverter.GetBytes(list[i].ShuffledID));
+                stub.AddRange(BitConverter.GetBytes(list[i].ShuffledIdentifier));
 
                 stub.AddRange(BitConverter.GetBytes(Br));
                 try
                 {
-                    stub.AddRange(BitConverter.GetBytes(list[i + 1].BlockID));
+                    stub.AddRange(BitConverter.GetBytes(list[i + 1].BlockIdentifier));
                 }
                 catch 
                 {
                     stub.AddRange(BitConverter.GetBytes(ExitBlock)); // Exit control flow.
                 }
 
-                blocks.Add(new OpcodesBlock(list[i].BlockID, stub.ToArray()));
+                blocks.Add(new OpcodesBlock(list[i].BlockIdentifier, stub.ToArray()));
             }
 
             arr.AddRange(BitConverter.GetBytes(Br));
-            arr.AddRange(BitConverter.GetBytes(blocks[0].ID));
+            arr.AddRange(BitConverter.GetBytes(blocks[0].Identifier));
 
             var rndBlocks = blocks.ToList().OrderBy(x => Guid.NewGuid()).ToList();
             foreach (var block in rndBlocks)

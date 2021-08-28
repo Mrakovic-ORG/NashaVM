@@ -1,21 +1,11 @@
-﻿using dnlib.DotNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using dnlib.DotNet; 
+using System.Collections.Generic; 
 
-namespace Nasha.CLI.Core
-{
-    public class Translated
-    {
+namespace Nasha.CLI.Core {
+    public class Translated {
         public MethodDef Method { get; }
-        public List<NashaInstruction> Instructions { get; }
-
-        public Translated(MethodDef method, List<NashaInstruction> instructions)
-        {
-            Method = method;
-            Instructions = instructions;
-        }
+        public List<NashaInstruction> Instructions { get; } 
+        public Translated(MethodDef method, List<NashaInstruction> instructions) => 
+            (Method, Instructions) = (method, instructions);
     }
 }

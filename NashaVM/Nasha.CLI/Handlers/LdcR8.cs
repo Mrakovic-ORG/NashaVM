@@ -19,7 +19,7 @@ namespace Nasha.CLI.Handlers
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
             var buf = new byte[9];
-            buf[0] = (byte)NashaOpcodes.LdcR8.ShuffledID;
+            buf[0] = (byte)NashaOpcodes.LdcR8.ShuffledIdentifier;
             Array.Copy(BitConverter.GetBytes((double)instruction.Operand), 0, buf, 1, 8);
             return buf;
         }

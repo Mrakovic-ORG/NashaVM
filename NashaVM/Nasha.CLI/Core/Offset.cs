@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Nasha.CLI.Core
-{
-    public readonly struct Offset
-    {
-        public Offset(int start, int val)
-        {
+﻿namespace Nasha.CLI.Core {
+    public readonly struct Offset {
+        public Offset(int start, int value) {
             Start = start;
-            Value = val;
+            Value = value;
         }
 
         public readonly int Start;

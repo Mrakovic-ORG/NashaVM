@@ -8,12 +8,12 @@ namespace Nasha.CLI.Core
 {
     public class OpcodesBlock
     {
-        public int ID { get; private set; }
+        public int Identifier { get; private set; }
         public byte[] Content { get; private set; }
-        public OpcodesBlock(int ID, byte[] Content)
+        public OpcodesBlock(int identifier, byte[] blockContent)
         {
-            this.ID = ID;
-            this.Content = Content;
+            Identifier = identifier;
+            Content = blockContent;
         }
     }
 }

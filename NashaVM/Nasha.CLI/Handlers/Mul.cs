@@ -17,7 +17,7 @@ namespace Nasha.CLI.Handlers
 
         public byte[] Serializer(NashaSettings settings, NashaInstruction instruction)
         {
-            return new[] { (byte)NashaOpcodes.Mul.ShuffledID };
+            return new[] { (byte)NashaOpcodes.Mul.ShuffledIdentifier };
         }
     }
 }

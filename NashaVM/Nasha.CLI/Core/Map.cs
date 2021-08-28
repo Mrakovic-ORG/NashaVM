@@ -5,15 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nasha.CLI.Core
-{
-    public static class Map
-    {
+namespace Nasha.CLI.Core {
+    public static class Map {
         private static readonly Dictionary<OpCode, IHandler> OpCodeToHandler = new Dictionary<OpCode, IHandler>();
         private static readonly Dictionary<NashaOpcode, IHandler> VmOpCodeToHandler = new Dictionary<NashaOpcode, IHandler>();
 
-        static Map()
-        {
+        static Map() {
             foreach (var type in typeof(Map).Assembly.DefinedTypes)
             {
                 if (type.IsInterface || !typeof(IHandler).IsAssignableFrom(type))

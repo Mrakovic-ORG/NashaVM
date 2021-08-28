@@ -22,7 +22,7 @@ namespace Nasha.CLI.Handlers
             var str = Encoding.UTF8.GetBytes(instruction.Operand.ToString());
 
             var buf = new byte[5 + str.Length];
-            buf[0] = (byte)NashaOpcodes.Ldstr.ShuffledID;
+            buf[0] = (byte)NashaOpcodes.Ldstr.ShuffledIdentifier;
             Array.Copy(BitConverter.GetBytes(str.Length), 0, buf, 1, 4);
             Array.Copy(str, 0, buf, 5, str.Length);
             return buf;

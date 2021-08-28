@@ -1,172 +1,230 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using dnlib.DotNet;
+﻿using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using dnlib.DotNet.Writer;
-using Nasha.CLI.Core;
-using System.Drawing;
-using Console = Colorful.Console;
-using Extensions = Nasha.CLI.Core.Extensions;
-using Nasha.CLI.Helpers;
+using Nasha.CLI.Core; 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression; 
+using System.Linq;
+using System.Reflection;
+using Serilog.Core;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
+using System.Diagnostics;
 
 namespace Nasha.CLI
 {
-    internal static class Program
-    {
-        private static readonly NashaSettings Settings = new NashaSettings();
-        private static readonly List<PESection> NashaSections = new List<PESection>();
+    internal static class Program {
 
-        private static readonly Color SuccessDarkColor = ColorTranslator.FromHtml("#283593");
-        private static readonly Color SuccessLightColor = ColorTranslator.FromHtml("#3F51B5");
-        private static readonly Color FailedDarkColor = ColorTranslator.FromHtml("#6A1B9A");
-        private static readonly Color FailedLightColor = ColorTranslator.FromHtml("#9C27B0");
+        private static readonly NashaSettings _nashaSettings = new();
+        private static readonly List<PESection> _nashaSections = new();
+        private static readonly string _nashaVersion = typeof(Program).Assembly.GetName().Version.ToString();
+        private static readonly Logger _logger = new LoggerConfiguration().WriteTo.Console(theme: AnsiConsoleTheme.Code).CreateLogger();
 
-        private static void Main(string[] args)
-        {
-            if (args.Length == 0)
-            {
-                Extensions.WriteLineFormatted("Please {0} your file.", FailedLightColor, "drag and drop".ToColor(FailedDarkColor));
-                Console.ReadKey();
-                return;
+        private static void Main(string[] args) {
+
+            Console.Title = $"Nasha v{_nashaVersion} - [NSVM]";
+            Console.SetWindowSize(88, 20);
+            Console.SetBufferSize(88, 9001);
+
+            if (args.Length <= 0) {
+                Console.Write("[~] Module Path: ");
+                args = new[] { Console.ReadLine() };
             }
+
+            var timer = Stopwatch.StartNew();
             var module = ModuleDefMD.Load(args[0]);
 
-            var runtimePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Nasha.dll");
-            var runtime = ModuleDefMD.Load(runtimePath);
+            var runtimePath = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "Nasha.dll");
+            var runtime = ModuleDefMD.Load(runtimePath); 
 
-            IMethod runMethod = Injection.InjectRuntimeMethod(runtime, module, "Main", "Execute");
-            IMethod runCtor = Injection.InjectRuntimeMethod(runtime, module, "Main", ".ctor");
-            IMethod configCtor = Injection.InjectRuntimeMethod(runtime, module, "Config", ".ctor");
-            IMethod configSetup = Injection.InjectRuntimeMethod(runtime, module, "Config", "SetupReferences");
-            IMethod configDiscover = Injection.InjectRuntimeMethod(runtime, module, "Config", "SetupDiscover");
-            IMethod configVmBytes = Injection.InjectRuntimeMethod(runtime, module, "Config", "SetupBody");
+            IMethod runMethod = ImportRuntimeMethod(runtime, module, "Main", "Execute");
+            IMethod runCtor = ImportRuntimeMethod(runtime, module, "Main", ".ctor");
+            IMethod configCtor = ImportRuntimeMethod(runtime, module, "Config", ".ctor");
+            IMethod configSetup = ImportRuntimeMethod(runtime, module, "Config", "SetupReferences");
+            IMethod configDiscover = ImportRuntimeMethod(runtime, module, "Config", "SetupDiscover");
+            IMethod configVmBytes = ImportRuntimeMethod(runtime, module, "Config", "SetupBody");
 
-            var configField = new FieldDefUser("cfg", new FieldSig(configCtor.DeclaringType.ToTypeSig()), dnlib.DotNet.FieldAttributes.Public | dnlib.DotNet.FieldAttributes.Static);
+            var configField = new FieldDefUser(GenerateString(), new FieldSig(configCtor.DeclaringType.ToTypeSig()), dnlib.DotNet.FieldAttributes.Public | dnlib.DotNet.FieldAttributes.Static);
             module.GlobalType.Fields.Add(configField);
             var globalConstructor = module.GlobalType.FindOrCreateStaticConstructor();
 
-            Console.WriteLine("Do you want bypass ObfuscationAttributes? y/n (default y) ");
+             
+            
+            Console.Write("[?] Bypass ObfuscationAttribute: ");
             bool bypass = Console.ReadKey().Key != ConsoleKey.N;
+            Console.WriteLine();
 
-            foreach (var type in module.Types)
-            {
-                if (type.IsGlobalModuleType) continue;
-                foreach (var method in type.Methods)
-                {
-                    if (bypass)
-                        goto virt;
-                    foreach (var attr in method.CustomAttributes)
-                        if (attr.AttributeType.TypeName == method.Module.Import(typeof(System.Reflection.ObfuscationAttribute)).TypeName)
-                        {
-                            if (attr.Properties.FirstOrDefault(x => x.Name == "Feature" && x.Value.ToString() == "virt") != null)
-                            {
+            foreach (var type in module.Types.Where(x => !x.IsGlobalModuleType && !x.HasGenericParameters)) { 
+                foreach (var method in type.Methods.Where(x => !x.HasGenericParameters)) {
 
-                                // If StripAfterObfuscation is set to true Nasha will remove the attribute from the output assembly.
-                                if (attr.Properties.FirstOrDefault(x => x.Name == "StripAfterObfuscation") is var stripAfterObfuscation && stripAfterObfuscation != null)
-                                {
-                                    var stripObf = (bool)stripAfterObfuscation.Value;
-                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "StripAfterObfuscation".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor), "Method".ToColor(stripObf ? SuccessDarkColor : FailedDarkColor), method.Name.ToString().ToColor(stripObf ? SuccessLightColor : FailedLightColor));
+                    if (!bypass && !method.IsNashaMarked())
+                        continue;
 
-                                    if (stripObf) method.CustomAttributes.Remove(attr);
-                                }
-                                else
-                                {
-                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "StripAfterObfuscation".ToColor(SuccessDarkColor), "Method".ToColor(SuccessDarkColor), method.Name.ToString().ToColor(SuccessLightColor));
+                    var nashaInstructions = Translator.Translate(_nashaSettings, method);
+                    var hasInstruction = nashaInstructions is not null;
 
-                                    method.CustomAttributes.Remove(attr);
-                                }
-
-                                // If ApplyToMembers is set to true Nasha will apply the virtualization to the method itself.
-                                if (attr.Properties.FirstOrDefault(x => x.Name == "ApplyToMembers") is var applyToMembers && applyToMembers != null)
-                                {
-                                    var applyMembers = (bool)applyToMembers.Value;
-                                    Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "ApplyToMembers".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor), "Method".ToColor(applyMembers ? SuccessDarkColor : FailedDarkColor), method.Name.ToString().ToColor(applyMembers ? SuccessLightColor : FailedLightColor));
-
-                                    if (!applyMembers) continue;
-                                }
-
-                                goto virt;
-                            }
-                        }
-
-                    continue;
-
-                virt:
-                    var nashaInstructions = Translator.Translate(Settings, method) ?? null;
-                    var hasInstruction = nashaInstructions != null;
-                    if (hasInstruction) Settings.Translated.Add(new Translated(method, nashaInstructions));
-
-                    if (hasInstruction)
-                    {
-                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n{3}: {4}\n\n", "Virtualized".ToColor(SuccessDarkColor), $"Method".ToColor(SuccessDarkColor), method.Name.ToString().ToColor(SuccessLightColor), "Instructions".ToColor(SuccessDarkColor), nashaInstructions.Count.ToString().ToColor(SuccessLightColor));
+                    if (hasInstruction) {
+                        _nashaSettings.Translated.Add(new Translated(method, nashaInstructions));
+                        _logger.Information("{0} Method Virtualized.", method.Name.String);
                     }
-                    else
-                    {
-                        Extensions.WriteLineFormatted("{0}\n{1}: {2}\n\n", "Failed Virtualizing".ToColor(FailedDarkColor), $"Method".ToColor(FailedDarkColor), method.Name.ToString().ToColor(FailedLightColor));
-                    }
-
+                    else {
+                        _logger.Error("Can't Virtualize Method {0}.", method.Name.String); 
+                    } 
                 }
             }
 
+            // configField = new Config();
             globalConstructor.Body.Instructions.Insert(0, OpCodes.Newobj.ToInstruction(configCtor));
             globalConstructor.Body.Instructions.Insert(1, OpCodes.Stsfld.ToInstruction(configField));
+
+            // configField.SetupReferences()
             globalConstructor.Body.Instructions.Insert(2, OpCodes.Ldsfld.ToInstruction(configField));
             globalConstructor.Body.Instructions.Insert(3, OpCodes.Callvirt.ToInstruction(configSetup));
-            globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
-            globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configDiscover));
+
+            // configField.SetupBody()
             globalConstructor.Body.Instructions.Insert(4, OpCodes.Ldsfld.ToInstruction(configField));
             globalConstructor.Body.Instructions.Insert(5, OpCodes.Callvirt.ToInstruction(configVmBytes));
 
-            foreach (var translated in Settings.Translated)
-            {
-                translated.Method.Body = new CilBody() { MaxStack = 1 };
-                translated.Method.Body.Instructions.Add(OpCodes.Newobj.ToInstruction(runCtor));
-                AddParameters(translated.Method);
-                translated.Method.Body.Instructions.Add(OpCodes.Ldc_I4.ToInstruction(0));
+            // configField.SetupDiscover()
+            globalConstructor.Body.Instructions.Insert(6, OpCodes.Ldsfld.ToInstruction(configField));
+            globalConstructor.Body.Instructions.Insert(7, OpCodes.Callvirt.ToInstruction(configDiscover));
 
-                translated.Method.Body.Instructions.Add(OpCodes.Ldsfld.ToInstruction(configField));
-                translated.Method.Body.Instructions.Add(OpCodes.Call.ToInstruction(runMethod));
-                translated.Method.Body.Instructions.Add(translated.Method.HasReturnType ? OpCodes.Unbox_Any.ToInstruction(translated.Method.ReturnType.ToTypeDefOrRef()) : OpCodes.Pop.ToInstruction());
+            foreach (var method in _nashaSettings.Translated.Select(x => x.Method)) {
 
-                translated.Method.Body.Instructions.Add(OpCodes.Ret.ToInstruction());
+                method.Body = new CilBody() { MaxStack = 1 };
+                // Parameters Array.
+                method.Body.Variables.Add(new(new SZArraySig(method.Module.CorLibTypes.Object)));
+                // Return Object.
+                method.Body.Variables.Add(new(method.Module.CorLibTypes.Object));
+
+
+                var stubExpression = GenerateStub(method, runCtor, configField, runMethod).ToList();
+
+                var parameterExpression = GenerateParametersStub(method);
+
+                // AddParameters(method);
+
+                stubExpression.InsertRange(0, parameterExpression);
+
+                var leaveLabel = new Instruction(OpCodes.Ldloc_1);
+
+                if (method.Parameters.Any(x => x.Type is ByRefSig)) /* (ref, out) param */ {
+
+                    stubExpression.Add(new(OpCodes.Leave, leaveLabel));
+
+                    var refExpression = new List<Instruction>();
+
+                    foreach (var parameter in method.Parameters.Where(x => x.Type is ByRefSig))
+                        refExpression.AddRange(ParameterExpression(parameter));
+
+                    refExpression.Add(new(OpCodes.Endfinally));
+                    stubExpression.AddRange(refExpression);
+
+                    var exHandler = new ExceptionHandler(ExceptionHandlerType.Finally) {
+                        TryStart = stubExpression.First(x => x.OpCode.Code is Code.Newobj),
+                        TryEnd = refExpression.First(),
+                        HandlerStart = refExpression.First(),
+                        HandlerEnd = leaveLabel,
+                    };
+                    method.Body.ExceptionHandlers.Add(exHandler); 
+                }
+
+                foreach (var stubInstruction in stubExpression)
+                    method.Body.Instructions.Add(stubInstruction); 
+
+                method.Body.Instructions.Add(leaveLabel);
+                method.Body.Instructions.Add(method.HasReturnType
+                    ? new(OpCodes.Unbox_Any, method.ReturnType.ToTypeDefOrRef())
+                    : new(OpCodes.Pop));
+                method.Body.Instructions.Add(new(OpCodes.Ret));
+
+                IEnumerable<Instruction> ParameterExpression(Parameter parameter) {
+                    var ret = new List<Instruction>();
+                    ret.Add(new(OpCodes.Ldarg, parameter));
+                    ret.Add(new(OpCodes.Ldloc_0));
+                    ret.Add(new(OpCodes.Ldc_I4, parameter.MethodSigIndex));
+                    ret.Add(new(OpCodes.Ldelem_Ref));
+                    if (parameter.Type.IsValueType) {
+                        ret.Add(new(OpCodes.Unbox_Any, method.Module.Import(parameter.Type)));
+                    }
+                    // Sorry For Yandere Solution :/
+                    if (parameter.Type.Next == module.CorLibTypes.IntPtr)
+                        ret.Add(new(OpCodes.Stind_I));
+                    else if (parameter.Type.Next == module.CorLibTypes.SByte || parameter.Type.Next == module.CorLibTypes.Byte)
+                        ret.Add(new(OpCodes.Stind_I1));
+                    else if (parameter.Type.Next == module.CorLibTypes.Int16 || parameter.Type.Next == module.CorLibTypes.UInt16)
+                        ret.Add(new(OpCodes.Stind_I2));
+                    else if (parameter.Type.Next == module.CorLibTypes.Int32 || parameter.Type.Next == module.CorLibTypes.UInt32)
+                        ret.Add(new(OpCodes.Stind_I4));
+                    else if (parameter.Type.Next == module.CorLibTypes.Int64 || parameter.Type.Next == module.CorLibTypes.UInt64)
+                        ret.Add(new(OpCodes.Stind_I8));
+                    else if (parameter.Type.Next == module.CorLibTypes.Single)
+                        ret.Add(new(OpCodes.Stind_R4));
+                    else if (parameter.Type.Next == module.CorLibTypes.Double)
+                        ret.Add(new(OpCodes.Stind_R8));
+                    else
+                        ret.Add(new(OpCodes.Stind_Ref));
+                    return ret;
+                }
             }
 
-            var output = Path.GetFileNameWithoutExtension(args[0]) + ".Nasha.exe";
+            var output = args[0].Insert(args[0].Length - 4, "-Nasha");
             var writer = new ModuleWriterOptions(module);
 
             writer.WriterEvent += InsertSections;
             writer.WriterEvent += InsertVmBody;
             writer.MetadataLogger = DummyLogger.NoThrowInstance;
-            writer.MetadataOptions.Flags = MetadataFlags.AlwaysCreateStringsHeap | MetadataFlags.AlwaysCreateBlobHeap | MetadataFlags.AlwaysCreateGuidHeap | MetadataFlags.AlwaysCreateUSHeap;
+            writer.MetadataOptions.Flags = MetadataFlags.AlwaysCreateStringsHeap |
+                                           MetadataFlags.AlwaysCreateBlobHeap | 
+                                           MetadataFlags.AlwaysCreateGuidHeap | 
+                                           MetadataFlags.AlwaysCreateUSHeap;
             module.Write(output, writer);
 
             // Copy Nasha runtime to application path
             var outputDir = Path.GetDirectoryName(args[0]);
-            if (Directory.GetCurrentDirectory() != outputDir) File.Copy(runtimePath, outputDir + "\\Nasha.dll", true);
 
+            if (Directory.GetCurrentDirectory() != outputDir) {
+                File.Copy(runtimePath, outputDir + "\\Nasha.dll", true);
+            }
 
-            Extensions.WriteLineFormatted("Virtualized file saved in \"{0}\"\n\n", $"{outputDir}\\{output}".ToColor(SuccessLightColor));
-            Console.WriteWithGradient(@"M""""""""""""""`YM                   dP                M""""MMMMM""""M M""""""""""`'""""""`YM
-M  mmmm.  M                   88                M  MMMMM  M M  mm.  mm.  M
-M  MMMMM  M .d8888b. .d8888b. 88d888b. .d8888b. M  MMMMP  M M  MMM  MMM  M
-M  MMMMM  M 88'  `88 Y8ooooo. 88'  `88 88'  `88 M  MMMM'. M M  MMM  MMM  M
-M  MMMMM  M 88.  .88       88 88    88 88.  .88 M  MMP' .MM M  MMM  MMM  M 
-M  MMMMM  M `88888P8 `88888P' dP    dP `88888P8 M     .dMMM M  MMM  MMM  M 
-MMMNASHAMMM                                     MMMMMMMMMMM MMMMMMMMMMMMMM", SuccessLightColor, FailedLightColor, 6);
+            timer.Stop();
+            _logger.Information("Module {0} Writed Successfully.", module.Assembly.Name.String);
+            _logger.Information("Finished In {0}.", timer.Elapsed.TotalSeconds);
             Console.ReadKey();
+        }
+
+        public static IMethod ImportRuntimeMethod(ModuleDefMD runtimeModule, ModuleDefMD targetModule, string typeName, string methodName) =>
+            targetModule.Import(runtimeModule.Types.ToArray().First(x => x.Name == typeName).Methods.First(x => x.Name == methodName));
+        public static bool IsNashaMarked(this MethodDef method) {
+            if (!method.CustomAttributes
+                .Any(x => x.TypeFullName == $"System.Reflection.{nameof(ObfuscationAttribute)}"))
+                return false;
+
+            foreach (var ca in method.CustomAttributes.Where(x => x.TypeFullName == $"System.Reflection.{nameof(ObfuscationAttribute)}").ToArray()) {
+
+                if (!ca.Properties.Any(x => x.Name == nameof(ObfuscationAttribute.Feature) && x.Value is string featureName && featureName == "NSVM")) // Native Sharp Virtual Machine.
+                    continue;
+
+                if (ca.Properties.Any(x => x.Name == nameof(ObfuscationAttribute.StripAfterObfuscation) && x.Value is bool stripCA && stripCA))
+                    method.CustomAttributes.Remove(ca);
+
+                if (ca.Properties.Any(x => x.Name == nameof(ObfuscationAttribute.ApplyToMembers) && x.Value is bool apply && !apply))
+                    return false;
+
+                return true;
+            }
+
+            return false;
         }
 
         private static void InsertSections(object sender, ModuleWriterEventArgs e)
         {
             var writer = (ModuleWriterBase)sender;
-            if (e.Event == ModuleWriterEvent.MDMemberDefRidsAllocated + 1)
-                NashaSections.ForEach(x => writer.AddSection(x));
-        }
-
+            if (e.Event == ModuleWriterEvent.MDMemberDefsInitialized)
+                _nashaSections.ForEach(x => writer.AddSection(x));
+        } 
         private static void InsertVmBody(object sender, ModuleWriterEventArgs e)
         {
             var mainSection = new PESection(".Nasha0", 0x60000020);
@@ -178,59 +236,125 @@ MMMNASHAMMM                                     MMMMMMMMMMM MMMMMMMMMMMMMM", Suc
             if (e.Event != ModuleWriterEvent.MDMemberDefRidsAllocated)
                 return;
 
-            var translated = Settings.Translated;
+            var translated = _nashaSettings.Translated;
             var bufferedLength = 0;
             var nasha0 = new byte[0];
 
             for (int i = 0; i < translated.Count; ++i)
             {
-                var methodBytes = Settings.Serialize(translated[i]);
+                var methodBytes = _nashaSettings.Serialize(translated[i]);
                 Array.Resize(ref nasha0, nasha0.Length + methodBytes.Count);
                 methodBytes.CopyTo(nasha0, bufferedLength);
-                Settings.Translated[i].Method.Body.Instructions.Last(x => x.OpCode == OpCodes.Ldc_I4).Operand = bufferedLength;
+                _nashaSettings.Translated[i].Method.Body.Instructions.First(x => x.OpCode == OpCodes.Ldc_I4 && (int)x.Operand == 0xFFFFFFF).Operand = bufferedLength;
                 bufferedLength += methodBytes.Count;
             }
 
             mainSection.Add(new ByteArrayChunk(Compress(nasha0)), 1);
-            references.Add(new ByteArrayChunk(Compress(Settings.TranslateReference().ToArray())), 1);
+            references.Add(new ByteArrayChunk(Compress(_nashaSettings.TranslateReference().ToArray())), 1);
             opcodesList.Add(new ByteArrayChunk(NashaSettings.TranslateOpcodes().ToArray()), 1);
 
-            NashaSections.Add(mainSection);
-            NashaSections.Add(references);
-            NashaSections.Add(opcodesList);
+            _nashaSections.Add(mainSection);
+            _nashaSections.Add(references);
+            _nashaSections.Add(opcodesList);
         }
 
-        private static void AddParameters(MethodDef method)
-        {
-            if (method.Parameters.Count == 0)
-            {
-                method.Body.Instructions.Add(OpCodes.Ldnull.ToInstruction());
-                return;
+        private static IEnumerable<Instruction> GenerateStub(
+            MethodDef method,
+            IMethod mainConstructor,
+            IField configField,
+            IMethod runMethod) {
+            var ret = new List<Instruction>();
+
+            // Initialize New Main Class.
+            ret.Add(new(OpCodes.Newobj, mainConstructor));
+            // Load Parameters Local.
+            ret.Add(new(OpCodes.Ldloc_0));
+            // Method Identifier That Will get Patched While Inserting Sections.
+            ret.Add(new(OpCodes.Ldc_I4, 0xFFFFFFF));
+            // Load Config Field.
+            ret.Add(new(OpCodes.Ldsfld, configField));
+            // Run VM.
+            ret.Add(new(OpCodes.Call, runMethod)); 
+            // Store Returned Object.
+            ret.Add(new(OpCodes.Stloc_1));
+
+
+            return ret;
+        } 
+        private static IEnumerable<Instruction> GenerateParametersStub(MethodDef method) {
+            var ret = new List<Instruction>();
+
+            if (method.Parameters.Count is 0) {
+                ret.Add(new(OpCodes.Ldnull));
+                return ret;
             }
 
-            method.Body.Instructions.Add(OpCodes.Ldc_I4.ToInstruction(method.Parameters.Count));
-            method.Body.Instructions.Add(OpCodes.Newarr.ToInstruction(method.Module.CorLibTypes.Object));
-            method.Body.Instructions.Add(OpCodes.Dup.ToInstruction());
+            // Push Parameters Count.
+            ret.Add(new(OpCodes.Ldc_I4, method.Parameters.Count));
+            // Push new Object Array on The Stack.
+            ret.Add(new(OpCodes.Newarr, method.Module.CorLibTypes.Object.ToTypeDefOrRef()));
 
-            for (var i = 0; i < method.Parameters.Count; i++)
-            {
-                method.Body.Instructions.Add(OpCodes.Ldc_I4.ToInstruction(i));
-                method.Body.Instructions.Add(OpCodes.Ldarg.ToInstruction(method.Parameters[i]));
+            for (int x = 0; x < method.Parameters.Count; x++) {
+                var parameter = method.Parameters[x];
 
-                var cor = method.Module.CorLibTypes;
-                var param = method.Parameters[i];
-                if (!param.IsHiddenThisParameter)
-                    if (param.Type != cor.String && param.Type != cor.Object && param.Type != cor.TypedReference)
-                    {
-                        var spec = new TypeSpecUser(param.Type);
-                        method.Body.Instructions.Add(new Instruction(OpCodes.Box, spec));
-                    }
+                var storeParameterExpression = new Instruction[] {
+                    // Duplicate Array On The Stack.
+                    new(OpCodes.Dup),
+                    // Push Item Index.
+                    new(OpCodes.Ldc_I4, x),
+                    // Load Parameter Value.
+                    new(OpCodes.Ldarg, parameter),
+                    // Store Parameter Value In Item Index (x).
+                    new(OpCodes.Stelem_Ref),
+                }.ToList();
 
-                method.Body.Instructions.Add(OpCodes.Stelem_Ref.ToInstruction());
-                method.Body.Instructions.Add(OpCodes.Dup.ToInstruction());
+                if (parameter.Type is ByRefSig)
+                    storeParameterExpression.Insert(3, new(GetLoadRefCode(parameter, method.Module)));
+
+                if (parameter.Type.IsValueType) {
+                    storeParameterExpression.Insert(storeParameterExpression.Count is 4 
+                        ? 3
+                        : 4, new(OpCodes.Box, method.Module.Import(parameter.Type)));
+                }
+
+                ret.AddRange(storeParameterExpression);
+                 
             }
 
-            method.Body.Instructions.Remove(method.Body.Instructions.Last());
+            // Pop Array From Stack And Store It On Parameters Local.
+            ret.Add(new(OpCodes.Stloc_0, method.Body.Variables.First()));
+
+            return ret;
+        }  
+        private static OpCode GetLoadRefCode(Parameter parameter, ModuleDef module) {
+            if (parameter.Type.Next == module.CorLibTypes.IntPtr)
+                return OpCodes.Ldind_I;
+
+            else if (parameter.Type.Next == module.CorLibTypes.Byte)
+                return OpCodes.Ldind_U1;
+            else if (parameter.Type.Next == module.CorLibTypes.SByte)
+                return OpCodes.Ldind_I1;
+
+            else if (parameter.Type.Next == module.CorLibTypes.UInt16)
+                return OpCodes.Ldind_U2;
+            else if (parameter.Type.Next == module.CorLibTypes.Int16)
+                return OpCodes.Ldind_I2;
+
+            else if (parameter.Type.Next == module.CorLibTypes.UInt32)
+                return OpCodes.Ldind_U4;
+            else if (parameter.Type.Next == module.CorLibTypes.Int32)
+                return OpCodes.Ldind_I4;
+
+            else if (parameter.Type.Next == module.CorLibTypes.Int64 || parameter.Type.Next == module.CorLibTypes.UInt64)
+                return OpCodes.Ldind_I8;
+
+            else if (parameter.Type.Next == module.CorLibTypes.Single)
+                return OpCodes.Ldind_R4;
+            else if (parameter.Type.Next == module.CorLibTypes.Double)
+                return OpCodes.Ldind_R8;
+
+            else
+                return OpCodes.Ldind_Ref;
         }
 
         private static byte[] Compress(byte[] array)
@@ -242,6 +366,15 @@ MMMNASHAMMM                                     MMMMMMMMMMM MMMMMMMMMMMMMM", Suc
             }
 
             return ms.ToArray();
+        } 
+        private static string GenerateString(int length = 5) {
+            var random = new Random();
+
+            var stringBuffer = new char[length];
+
+            for (int x = 0; x < stringBuffer.Length; x++)
+                stringBuffer[x] = (char)random.Next('0', 'z');
+            return new string(stringBuffer);
         }
     }
 }
